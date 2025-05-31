@@ -11,8 +11,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/prediction" element={<PredictionPage />} />
-      <Route path="forum" element={<ForumPage />} />
-      <Route path="newforum" element={<NewForumPage />} />
+      <Route path="/forum" element={<ForumPage />} />
+      <Route path="/newforum" element={<NewForumPage />} />
     </Routes>
   );
 }
