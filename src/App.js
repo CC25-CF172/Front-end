@@ -5,6 +5,7 @@ import Home from './Home';
 import PredictionPage from "./Prediction";
 import ForumPage from "./Forum";
 import NewForumPage from "./NewForum";
+import ChatbotPage from "./Chatbot";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/prediction" element={<PredictionPage />} />
       <Route path="/forum" element={<ForumPage />} />
       <Route path="/newforum" element={<NewForumPage />} />
+      <Route path="/chatbot" element={<ChatbotPage />} />
     </Routes>
   );
 }
