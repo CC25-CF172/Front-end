@@ -8,7 +8,13 @@ import User from "./user";
 import LoginPage from "./login";
 import RegisterPage from "./Register";
 import Navbar from "./pages/components/Navbar";
+import ForumPage from "./Forum";
+import ForgotPwdPage from "./ForgotPwd";
+import ResetPasswordInput from "./ResetPwd"; 
+import EditProfilePage from "./EditProfile";
 import ProtectedRoute from "./pages/components/ProtectedRoute";
+import EdukasiNutrisiPage from "./EducationNutrition";
+
 
 function App() {
   return (
@@ -27,6 +33,11 @@ function App() {
         <Route path="/user" element={<User />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forum" element={<ForumPage />} />
+        <Route path="/forgotpwd" element={<ForgotPwdPage />} />
+        <Route path="/reset-password" element={<ResetPasswordInput />} />
+        <Route path="/editprofile" element={<EditProfilePage />} />
+        <Route path="/educationnutrition" element={<EdukasiNutrisiPage />} />
       </Routes>
     </Router>
   );

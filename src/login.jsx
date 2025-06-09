@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 // Jika sudah punya file api.js, gunakan import berikut:
 import { API_BASE_URL } from "./api"; // Pastikan path sesuai
 import { useNavigate } from "react-router-dom";
@@ -123,9 +124,6 @@ export default function StuntWatchLogin() {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
-                  Forgot password?
-                </a>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -156,6 +154,7 @@ export default function StuntWatchLogin() {
                   </button>
                 </div>
               </div>
+                  <Link to="/forgotpwd" className="text-sm text-blue-600 hover:text-blue-500 mt-1 block">Forgot Password</Link>
             </div>
           </div>
 

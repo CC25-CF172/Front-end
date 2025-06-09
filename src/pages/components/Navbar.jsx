@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Tambahkan useLocation
 import { FaUserCircle } from "react-icons/fa";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosMenu, IoIosClose } from "react-icons/io";
+import logo from "../../assets/logo3.png"; // Pastikan path sesuai dengan lokasi logo Anda
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [fullname, setFullname] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation(); // Ambil lokasi saat ini
 
   useEffect(() => {
     setFullname(localStorage.getItem("fullname"));
@@ -20,10 +23,18 @@ const Navbar = () => {
         setIsDropdownOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Untuk animasi underline
+  const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/prediction", label: "Prediction" },
+    { to: "/education", label: "Education" },
+    { to: "/forum", label: "Forum" },
+    { to: "/chatbot", label: "Chatbot" },
+  ];
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -34,88 +45,113 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white text-[#0D1B2A] shadow sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto flex justify-between items-center px-8 py-4">
+    <nav className="bg-[#FAFCFE] text-[#222F3E] shadow sticky top-0 z-50 border-t-4 border-[#222F3E]">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-0 min-h-[56px]">
         {/* Logo */}
         <div className="text-xl font-bold text-blue-600">
-          <Link to="/">StuntGuard</Link>
+          <Link to="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-12 w-auto inline-block mr-2"
+              style={{ maxHeight: 48 }}
+            />
+          </Link>
         </div>
 
-        {/* Navigation Menu */}
-        <ul className="flex gap-6 text-sm">
-          <li><Link to="/" className="hover:text-blue-500">Home</Link></li>
-          <li><Link to="/prediction" className="hover:text-blue-500">Prediction</Link></li>
-          <li><Link to="/education" className="hover:text-blue-500">Education</Link></li>
-          <li><Link to="/forum" className="hover:text-blue-500">Forum</Link></li>
-          <li><Link to="/chatbot" className="hover:text-blue-500">Chatbot</Link></li>
+        {/* Hamburger for mobile */}
+        <button
+          className="md:hidden text-2xl text-blue-600 focus:outline-none"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <IoIosClose /> : <IoIosMenu />}
+        </button>
+
+        {/* Navigation Menu Desktop */}
+        <ul className="hidden md:flex gap-6 text-sm">
+          {navLinks.map((nav) => {
+            const isActive = location.pathname === nav.to;
+            return (
+              <li key={nav.to} className="relative">
+                <Link
+                  to={nav.to}
+                  className={`hover:text-blue-500 transition-colors duration-300 ${
+                    isActive ? "text-blue-600 font-bold" : ""
+                  }`}
+                >
+                  {nav.label}
+                  {/* Animasi underline */}
+                  <span
+                    className={`absolute left-0 -bottom-1 h-[3px] rounded transition-all duration-300
+                      ${isActive ? "w-full bg-blue-500" : "w-0 bg-blue-500"}
+                    `}
+                  />
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
-        {/* Dark Mode Toggle */}
-        <div className="flex items-center gap-4">
-          {/* Conditional Rendering berdasarkan status login */}
+        {/* Desktop Auth/Profile */}
+        <div className="hidden md:flex items-center gap-4">
           {!fullname ? (
-            
             <div className="flex items-center gap-3">
-              <Link 
-                to="/Login" 
+              <Link
+                to="/Login"
                 className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full text-sm hover:bg-blue-50 transition-colors"
               >
                 Login
               </Link>
-              <Link 
-                to="/Register" 
+              <Link
+                to="/Register"
                 className="px-4 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition-colors"
               >
                 Register
               </Link>
             </div>
           ) : (
-            
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-2 bg-blue-500 text-white px-3 py-2 rounded-full text-sm hover:bg-blue-600 transition-colors"
+                className="flex items-center gap-2 bg-[#0284c7] text-white px-3 py-2 rounded-full text-sm hover:bg-[#0369a1] transition-colors"
               >
-                <FaUserCircle className="text-lg" />
+                <FaUserCircle className="text-lg text-[#0284c7] bg-white rounded-full" style={{ background: "#fff" }} />
                 <span>Profile</span>
-                <IoIosArrowDown 
+                <IoIosArrowDown
                   className={`text-base transition-transform duration-200 ${
-                    isDropdownOpen ? 'rotate-180' : ''
-                  }`} 
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
                 />
               </button>
-
               {/* Dropdown Menu */}
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 text-sm z-50">
-                  {/* Menu Items */}
-                  <Link 
-                    to="/user" 
+                  <Link
+                    to="/user"
                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors"
                     onClick={() => setIsDropdownOpen(false)}
                   >
-                    <FaUserCircle className="text-gray-400" />
+                    <FaUserCircle className="text-[#0284c7]" />
                     Your Profile
                   </Link>
-                  
-                  <Link 
-                    to="/settings" 
+                  <Link
+                    to="/editprofile"
                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors"
                     onClick={() => setIsDropdownOpen(false)}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" className="text-[#0284c7]">
                       <circle cx="12" cy="12" r="3"/>
                       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                     </svg>
                     Settings
                   </Link>
-                  
                   <div className="border-t border-gray-100 mt-1 pt-1">
                     <button
                       onClick={handleLogout}
                       className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 transition-colors"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-red-500">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" className="text-[#0284c7]">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                         <polyline points="16,17 21,12 16,7"/>
                         <line x1="21" y1="12" x2="9" y2="12"/>
@@ -128,6 +164,103 @@ const Navbar = () => {
             </div>
           )}
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 z-50 md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
+            <div
+              className="absolute top-0 right-0 w-64 h-full bg-white shadow-lg flex flex-col p-6 gap-6"
+              onClick={e => e.stopPropagation()}
+            >
+              <button
+                className="self-end text-2xl text-[#0284c7] mb-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Tutup menu"
+              >
+                <IoIosClose />
+              </button>
+              <ul className="flex flex-col gap-4 text-base">
+                {navLinks.map((nav) => {
+                  const isActive = location.pathname === nav.to;
+                  return (
+                    <li key={nav.to} className="relative">
+                      <Link
+                        to={nav.to}
+                        className={`hover:text-[#0284c7] transition-colors duration-300 ${
+                          isActive ? "text-[#0284c7] font-bold" : ""
+                        }`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {nav.label}
+                        <span
+                          className={`absolute left-0 -bottom-1 h-[3px] rounded transition-all duration-300
+                            ${isActive ? "w-full bg-[#0284c7]" : "w-0 bg-[#0284c7]"}
+                          `}
+                        />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="mt-6">
+                {!fullname ? (
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      to="/Login"
+                      className="px-4 py-2 text-[#0284c7] border border-[#0284c7] rounded-full text-sm hover:bg-blue-50 transition-colors text-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/Register"
+                      className="px-4 py-2 bg-[#0284c7] text-white rounded-full text-sm hover:bg-[#0369a1] transition-colors text-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Register
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      to="/user"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors rounded"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <FaUserCircle className="text-[#0284c7]" />
+                      Your Profile
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors rounded"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" className="text-[#0284c7]">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                      </svg>
+                      Settings
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 transition-colors rounded"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" className="text-[#0284c7]">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16,17 21,12 16,7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                      </svg>
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
