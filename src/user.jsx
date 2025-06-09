@@ -1,0 +1,242 @@
+import React, { useEffect, useState } from "react";
+import Navbar from './pages/components/Navbar';
+import Footer from './pages/components/Footer';
+import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "./api";
+// Tambahkan import untuk chart
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
+
+export default function ChildGrowthDashboard() {
+  const [profile, setProfile] = useState({ name: "", email: "", id: null });
+  const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState([]);
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    total: 0,
+    lastDate: "-",
+    currentStatus: "-",
+  });
+
+  // Scroll ke atas saat halaman di-refresh/mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setProfile({ name: "Pengguna", email: "-", id: null });
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${API_BASE_URL}/api/v1/profile`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        const user = data.data ? data.data : data;
+        setProfile({
+          name: user.name || "",
+          email: user.email || "",
+          id: user.id,
+        });
+        setLoading(false);
+
+        if (user.id) {
+          fetch(`${API_BASE_URL}/api/v1/stunting/history/${user.id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+          })
+            .then(res => res.json())
+            .then(result => {
+              if (result.success && Array.isArray(result.data)) {
+                setHistory(result.data);
+                console.log("Data history:", result.data);
+
+                if (result.data.length > 0) {
+                  const sorted = [...result.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                  setStats({
+                    total: result.data.length,
+                    lastDate: new Date(sorted[0].created_at).toLocaleDateString("id-ID", { year: "numeric", month: "short", day: "numeric" }),
+                    currentStatus: sorted[0].risk_type || "-",
+                  });
+                } else {
+                  setStats({ total: 0, lastDate: "-", currentStatus: "-" });
+                }
+              } else {
+                setHistory([]);
+                setStats({ total: 0, lastDate: "-", currentStatus: "-" });
+              }
+            });
+        }
+      })
+      .catch(() => {
+        setProfile({ name: "Pengguna", email: "-", id: null });
+        setLoading(false);
+      });
+  }, []);
+
+  const statusBadge = (status) => {
+    if (status === "Normal") return <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Normal</span>;
+    if (status === "Low Risk") return <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">Risiko Rendah</span>;
+    if (status === "At Risk") return <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs">Berisiko</span>;
+    return <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">{status}</span>;
+  };
+
+  // Sort history sekali saja untuk chart
+  const sortedHistory = [...history].sort((a, b) => a.age_months - b.age_months);
+
+  // Data chart berdasarkan history yang sudah diurutkan
+  const validHistory = sortedHistory.filter(item => item.current_length_cm && item.current_length_cm > 0);
+
+  const chartData = {
+    labels: validHistory.map(item => `${item.age_months} bln`),
+    datasets: [
+      {
+        label: "Tinggi Badan (cm)",
+        data: validHistory.map(item => item.current_length_cm),
+        fill: false,
+        borderColor: "#2563eb", // biru tebal
+        backgroundColor: "#60a5fa", // biru muda untuk titik
+        pointBackgroundColor: "#2563eb",
+        pointBorderColor: "#fff",
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        borderWidth: 3,
+        tension: 0.3,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { mode: "index", intersect: false },
+    },
+    scales: {
+      x: { title: { display: true, text: "Usia (bulan)" } },
+      y: { title: { display: true, text: "Tinggi Badan (cm)" }, beginAtZero: true },
+    },
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center bg-blue-50 p-4 rounded-xl mb-6">
+          <div className="flex items-center space-x-4">
+            <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center">
+              <span className="text-lg font-bold">👤</span>
+            </div>
+            <div>
+              <h1 className="font-bold text-lg">
+                {loading ? "Memuat..." : profile.name}
+              </h1>
+              <p className="text-sm text-gray-500">
+                {loading ? "Memuat..." : profile.email}
+              </p>
+            </div>
+          </div>
+          <button
+            className="border border-blue-400 text-blue-500 px-4 py-1 rounded-md hover:bg-blue-100 text-sm"
+            onClick={() => navigate("/editprofile")}>
+            Edit Profil
+          </button>
+        </div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Growth Chart */}
+          <div className="lg:col-span-2 bg-white p-4 rounded-xl shadow">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-semibold text-lg">Grafik Pertumbuhan Anak</h2>
+              {/* <a href="#" className="text-blue-500 text-sm">Lihat detail grafik →</a> */}
+            </div>
+            <div className="bg-gray-100 h-64 flex items-center justify-center rounded-md text-sm text-gray-500">
+              {history.length === 0 ? (
+                <span>Belum ada data pertumbuhan.</span>
+              ) : (
+                <Line data={chartData} options={chartOptions} />
+              )}
+            </div>
+          </div>
+
+          {/* Stats & Actions */}
+          <div className="space-y-4">
+            <div className="bg-white p-4 rounded-xl shadow">
+              <h3 className="font-semibold mb-2">Statistik Cepat</h3>
+              <p className="text-sm">Total Asesmen <span className="float-right font-medium">{stats.total}</span></p>
+              <p className="text-sm">Asesmen Terakhir <span className="float-right font-medium">{stats.lastDate}</span></p>
+              <p className="text-sm">Status Saat Ini <span className="float-right">{statusBadge(stats.currentStatus)}</span></p>
+            </div>
+
+            <div className="bg-white p-4 rounded-xl shadow space-y-2">
+              <h3 className="font-semibold mb-2">Aksi Cepat</h3>
+              <button className="bg-blue-500 hover:bg-blue-600 text-white w-full py-2 rounded-md text-sm font-medium">Asesmen Baru</button>
+              <button className="border border-blue-400 text-blue-500 w-full py-2 rounded-md text-sm">Unduh Grafik Pertumbuhan</button>
+              <button className="border border-blue-400 text-blue-500 w-full py-2 rounded-md text-sm">Tambah Profil Anak</button>
+              <button className="text-blue-500 text-sm underline w-full text-left mt-2">Atur Pengingat Pemeriksaan Berikutnya</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Assessment History */}
+        <div className="mt-6 bg-white p-4 rounded-xl shadow">
+          <h3 className="font-semibold text-lg mb-4">Riwayat Asesmen</h3>
+          <table className="w-full text-sm text-left">
+            <thead className="text-gray-500 border-b">
+              <tr>
+                <th className="py-2">TANGGAL</th>
+                <th className="py-2">USIA (BULAN)</th>
+                <th className="py-2">STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="text-center py-4 text-gray-400">Belum ada data asesmen.</td>
+                </tr>
+              ) : (
+                history
+                  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                  .map((item, idx) => (
+                    <tr className="border-b" key={item.id || idx}>
+                      <td className="py-2">{new Date(item.created_at).toLocaleDateString("id-ID", { year: "numeric", month: "short", day: "numeric" })}</td>
+                      <td>{item.age_months}</td>
+                      <td>{statusBadge(item.risk_type)}</td>
+                    </tr>
+                  ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Resources */}
+        
+      </div>
+      <br />
+      <Footer />
+    </div>
+  );
+}

@@ -1,21 +1,45 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import Home from './Home';
 import PredictionPage from "./Prediction";
+import EducationPage from "./Education";
+import User from "./user";
+import LoginPage from "./login";
+import RegisterPage from "./Register";
+import Navbar from "./pages/components/Navbar";
 import ForumPage from "./Forum";
-import NewForumPage from "./NewForum";
-import ChatbotPage from "./Chatbot";
+import ForgotPwdPage from "./ForgotPwd";
+import ResetPasswordInput from "./ResetPwd"; 
+import EditProfilePage from "./EditProfile";
+import ProtectedRoute from "./pages/components/ProtectedRoute";
+import EdukasiNutrisiPage from "./EducationNutrition";
+
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/prediction" element={<PredictionPage />} />
-      <Route path="/forum" element={<ForumPage />} />
-      <Route path="/newforum" element={<NewForumPage />} />
-      <Route path="/chatbot" element={<ChatbotPage />} />
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/prediction"
+          element={
+            <ProtectedRoute>
+              <PredictionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/education" element={<EducationPage />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forum" element={<ForumPage />} />
+        <Route path="/forgotpwd" element={<ForgotPwdPage />} />
+        <Route path="/reset-password" element={<ResetPasswordInput />} />
+        <Route path="/editprofile" element={<EditProfilePage />} />
+        <Route path="/educationnutrition" element={<EdukasiNutrisiPage />} />
+      </Routes>
+    </Router>
   );
 }
 
