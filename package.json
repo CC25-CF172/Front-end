@@ -13,10 +13,7 @@
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-<<<<<<< HEAD
-=======
     "react-icons": "^5.5.0",
->>>>>>> fe78b7cff5d6ee4d611b18b0c664671ee9571e04
     "react-router-dom": "^7.6.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.10.1",

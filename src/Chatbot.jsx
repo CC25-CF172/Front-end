@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "./pages/components/Navbar";
+import { API_BASE_URL } from "./api";
 
 const suggestions = [
   "What is stunting?",
@@ -61,22 +62,37 @@ const ChatbotPage = () => {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch(
-        "https://stuntguard-api.vercel.app/api/v1/chatbot",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: messageText }),
-        }
-      );
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/v1/chatbot`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ message: messageText }),
+      });
+
       const data = await response.json();
 
-      const botMessage = {
-        sender: "bot",
-        text: data.reply || "Sorry, I couldn't understand that.",
-        options: data.options || [],
-      };
-      setMessages((prev) => [...prev, botMessage]);
+      if (!response.ok) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "bot",
+            text: data.message || "Sorry, something went wrong.",
+          },
+        ]);
+        return;
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: data.data.reply,
+          options: [],
+        },
+      ]);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
