@@ -96,35 +96,77 @@ export default function ChildGrowthDashboard() {
   }, []);
 
   const statusBadge = (status) => {
-    if (status === "Normal") return <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Normal</span>;
-    if (status === "Low Risk") return <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">Risiko Rendah</span>;
-    if (status === "At Risk") return <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs">Berisiko</span>;
+    if (!status) return <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">-</span>;
+    const s = status.toLowerCase();
+    if (s === "normal") return <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Normal</span>;
+    if (s === "ringan") return <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">Ringan</span>;
+    if (s === "sedang") return <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs">Sedang</span>;
+    if (s === "berat") return <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs">Berat</span>;
     return <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">{status}</span>;
   };
 
   // Sort history sekali saja untuk chart
   const sortedHistory = [...history].sort((a, b) => a.age_months - b.age_months);
 
-  // Data chart berdasarkan history yang sudah diurutkan
-  const validHistory = sortedHistory.filter(item => item.current_length_cm && item.current_length_cm > 0);
+  // Pisahkan history berdasarkan gender
+  const maleHistory = sortedHistory.filter(
+    item => (item.gender === "Laki-laki" || item.gender === "M") && item.current_length_cm && item.current_length_cm > 0
+  );
+  const femaleHistory = sortedHistory.filter(
+    item => (item.gender === "Perempuan" || item.gender === "F") && item.current_length_cm && item.current_length_cm > 0
+  );
+
+  // Gabungkan semua usia unik untuk label sumbu X
+  const allAges = Array.from(
+    new Set([...maleHistory, ...femaleHistory].map(item => item.age_months))
+  ).sort((a, b) => a - b);
+
+  // Fungsi untuk mapping tinggi badan berdasarkan usia
+  const getDataByAge = (historyArr, ages) =>
+    ages.map(age => {
+      const found = historyArr.find(item => item.age_months === age);
+      return found ? found.current_length_cm : null;
+    });
+
+  const datasets = [];
+
+  if (maleHistory.length > 0) {
+    datasets.push({
+      label: "Tinggi Badan (cm) - Laki-laki",
+      data: getDataByAge(maleHistory, allAges),
+      fill: false,
+      borderColor: "#2563eb",
+      backgroundColor: "#60a5fa",
+      pointBackgroundColor: "#2563eb",
+      pointBorderColor: "#fff",
+      pointRadius: 6,
+      pointHoverRadius: 8,
+      borderWidth: 3,
+      tension: 0.3,
+      spanGaps: true,
+    });
+  }
+
+  if (femaleHistory.length > 0) {
+    datasets.push({
+      label: "Tinggi Badan (cm) - Perempuan",
+      data: getDataByAge(femaleHistory, allAges),
+      fill: false,
+      borderColor: "#22c55e",
+      backgroundColor: "#4ade80",
+      pointBackgroundColor: "#22c55e",
+      pointBorderColor: "#fff",
+      pointRadius: 6,
+      pointHoverRadius: 8,
+      borderWidth: 3,
+      tension: 0.3,
+      spanGaps: true,
+    });
+  }
 
   const chartData = {
-    labels: validHistory.map(item => `${item.age_months} bln`),
-    datasets: [
-      {
-        label: "Tinggi Badan (cm)",
-        data: validHistory.map(item => item.current_length_cm),
-        fill: false,
-        borderColor: "#2563eb", // biru tebal
-        backgroundColor: "#60a5fa", // biru muda untuk titik
-        pointBackgroundColor: "#2563eb",
-        pointBorderColor: "#fff",
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        borderWidth: 3,
-        tension: 0.3,
-      },
-    ],
+    labels: allAges.map(age => `${age} bln`),
+    datasets,
   };
 
   const chartOptions = {
@@ -173,12 +215,24 @@ export default function ChildGrowthDashboard() {
               <h2 className="font-semibold text-lg">Grafik Pertumbuhan Anak</h2>
               {/* <a href="#" className="text-blue-500 text-sm">Lihat detail grafik →</a> */}
             </div>
-            <div className="bg-gray-100 h-64 flex items-center justify-center rounded-md text-sm text-gray-500">
-              {history.length === 0 ? (
-                <span>Belum ada data pertumbuhan.</span>
-              ) : (
-                <Line data={chartData} options={chartOptions} />
-              )}
+            <div className="flex flex-row items-start gap-4">
+              <div className="bg-gray-100 h-64 flex flex-col items-center justify-center rounded-md text-sm text-gray-500 flex-1">
+                {history.length === 0 ? (
+                  <span>Belum ada data pertumbuhan.</span>
+                ) : (
+                  <Line data={chartData} options={chartOptions} />
+                )}
+              </div>
+              <div className="flex flex-col gap-2 mt-4">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 rounded-full" style={{ background: "#2563eb" }}></span>
+                  <span className="text-xs text-gray-700">Laki-laki</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 rounded-full" style={{ background: "#22c55e" }}></span>
+                  <span className="text-xs text-gray-700">Perempuan</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -195,8 +249,7 @@ export default function ChildGrowthDashboard() {
               <h3 className="font-semibold mb-2">Aksi Cepat</h3>
               <button className="bg-blue-500 hover:bg-blue-600 text-white w-full py-2 rounded-md text-sm font-medium">Asesmen Baru</button>
               <button className="border border-blue-400 text-blue-500 w-full py-2 rounded-md text-sm">Unduh Grafik Pertumbuhan</button>
-              <button className="border border-blue-400 text-blue-500 w-full py-2 rounded-md text-sm">Tambah Profil Anak</button>
-              <button className="text-blue-500 text-sm underline w-full text-left mt-2">Atur Pengingat Pemeriksaan Berikutnya</button>
+
             </div>
           </div>
         </div>
@@ -209,13 +262,14 @@ export default function ChildGrowthDashboard() {
               <tr>
                 <th className="py-2">TANGGAL</th>
                 <th className="py-2">USIA (BULAN)</th>
+                <th className="py-2">GENDER</th>
                 <th className="py-2">STATUS</th>
               </tr>
             </thead>
             <tbody>
               {history.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="text-center py-4 text-gray-400">Belum ada data asesmen.</td>
+                  <td colSpan={4} className="text-center py-4 text-gray-400">Belum ada data asesmen.</td>
                 </tr>
               ) : (
                 history
@@ -224,6 +278,7 @@ export default function ChildGrowthDashboard() {
                     <tr className="border-b" key={item.id || idx}>
                       <td className="py-2">{new Date(item.created_at).toLocaleDateString("id-ID", { year: "numeric", month: "short", day: "numeric" })}</td>
                       <td>{item.age_months}</td>
+                      <td>{item.gender || "-"}</td>
                       <td>{statusBadge(item.risk_type)}</td>
                     </tr>
                   ))
