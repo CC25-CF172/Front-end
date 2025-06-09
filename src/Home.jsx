@@ -8,29 +8,34 @@ import { ChevronDown, ChevronUp, Facebook, Twitter, Instagram, MapPin, Phone, Ma
 
 
 const HeroSection = () => (
-  <section className="bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 text-[#0A192F] 
-  py-20 px-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center min-h-[80vh]">
-    <div>
-      <h1 className="text-4xl md:text-5xl font-bold mb-4">
-        Prevent <span className="text-blue-500">Stunting</span>.<br />
-        Promote Healthy Growth.
-      </h1>
-      <p className="mb-6 text-gray-700">
-        Early detection and intervention are key to preventing stunting and ensuring optimal child development. Get personalized assessments and recommendations.
-      </p>
-      <div className="flex gap-4">
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow">Start Assessment →</button>
-        <button className="border border-blue-400 text-blue-500 hover:bg-blue-500 hover:text-white px-6 py-2 rounded-lg">Learn More</button>
+  <section className="bg-gradient-to-br from-blue-100 via-cyan-100 to-blue-100/30 text-[#0A192F] py-40 px-4 md-[80]">
+    <div className="flex flex-col md:flex-row justify-center items-center gap-8 max-w-5xl mx-auto">
+      {/* Kiri: Tulisan */}
+      <div className="w-full md:w-4/2 max-w-md">
+        <h1 className="text-5xl md:text-5xl font-bold mb-4 text-left">
+          Prevent <span className="text-blue-500">Stunting</span>.<br />
+          Promote Healthy Growth.
+        </h1>
+        <p className="mb-6 text-gray-700 text-left">
+          Early detection and intervention are key to preventing stunting and ensuring optimal child development. Get personalized assessments and recommendations.
+        </p>
+        <div className="flex gap-4">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow">Start Assessment →</button>
+          <button className="border border-blue-400 text-blue-500 hover:bg-blue-500 hover:text-white px-6 py-2 rounded-lg">Learn More</button>
+        </div>
       </div>
-    </div>
-    <div className="bg-gray-100 p-6 rounded-xl text-[#0A192F] min-h-[200px]">
-      <img src="https://via.placeholder.com/300x150" alt="Mother and child" className="mb-4 rounded" />
-      <h2 className="text-lg font-bold">Early Detection Matters</h2>
-      <p className="text-sm text-gray-700">Identifying stunting risk factors early can make all the difference.</p>
-      <div className="flex justify-center mt-2">
-        <div className="w-2 h-2 bg-blue-500 rounded-full mx-1"></div>
-        <div className="w-2 h-2 bg-gray-400 rounded-full mx-1"></div>
-        <div className="w-2 h-2 bg-gray-400 rounded-full mx-1"></div>
+      {/* Kanan: Carousel/Card */}
+      <div className="w-full md:w-1/2 flex justify-center">
+        <div className="bg-gray-100 p-6 rounded-xl text-[#0A192F] min-w-[320px] max-w-lg w-full flex flex-col items-center">
+          <img src="https://via.placeholder.com/400x180" alt="Mother and child" className="mb-4 rounded" />
+          <h2 className="text-lg font-bold text-center">Early Detection Matters</h2>
+          <p className="text-sm text-gray-700 text-center">Identifying stunting risk factors early can make all the difference.</p>
+          <div className="flex justify-center mt-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full mx-1"></div>
+            <div className="w-2 h-2 bg-gray-400 rounded-full mx-1"></div>
+            <div className="w-2 h-2 bg-gray-400 rounded-full mx-1"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -66,26 +71,27 @@ const StatsSection = () => (
 );
 
 const StuntHelpSection = () => (
-  <section className="text-center py-16 bg-neutral-100 text-[#0A192F]">
+
+  <section className="text-center py-16 bg-neutral-50 text-[#0A192F]">
     <h2 className="text-2xl md:text-3xl font-bold mb-4">How StuntGuard Help</h2>
     <p className="text-gray-700 max-w-2xl mx-auto mb-6">
       Our platform provides tools and resources to help parents and healthcare providers monitor and prevent stunting.
     </p>
     <div>
-      <div className="flex flex-col md:flex-row justify-center items-center gap-8 mt-8">
-        <div className="bg-gray-100 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-4xl mx-auto">
+        <div className="bg-white-50 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
           <h3 className="text-xl font-bold">1 in 4</h3>
           <p className="text-sm">Children under 5 are stunted globally.</p>
         </div>
-        <div className="bg-gray-100 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
+        <div className="bg-white-50 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
           <h3 className="text-xl font-bold">50%</h3>
           <p className="text-sm">Of stunted children live in Asia.</p>
         </div>
-        <div className="bg-gray-100 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
+        <div className="bg-white-50 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
           <h3 className="text-xl font-bold">20%</h3>
           <p className="text-sm">Of stunted children live in Africa.</p>
         </div>
-        <div className="bg-gray-100 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
+        <div className="bg-white-50 text-[#0A192F] px-6 py-4 rounded-lg shadow-lg">
           <h3 className="text-xl font-bold">20%</h3>
           <p className="text-sm">Of stunted children live in Africa.</p>
         </div>

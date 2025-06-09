@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { User, Moon, Sun } from 'lucide-react';
 import Navbar from "./pages/components/Navbar";
 import Footer from "./pages/components/Footer";
+import { API_BASE_URL } from "./api";
+
+
 
 // Main Prediction Component
 const PredictionPage = () => {
@@ -14,6 +16,10 @@ const PredictionPage = () => {
     currentLength: '',
     exclusiveBreastfeeding: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
+  const [showRecommendations, setShowRecommendations] = useState(false); // State to control recommendations visibility
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -23,11 +29,46 @@ const PredictionPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', formData);
-    alert('Assessment submitted! (This is a demo)');
+    setLoading(true);
+    setError('');
+    setResult(null);
+
+    const payload = {
+      gender: formData.childGender === "male" ? "M" : "F",
+      age_months: Number(formData.ageMonths),
+      birth_weight_kg: Number(formData.birthWeight),
+      birth_length_cm: Number(formData.birthLength),
+      current_weight_kg: Number(formData.currentWeight),
+      current_length_cm: Number(formData.currentLength),
+      exclusive_breastfeeding: formData.exclusiveBreastfeeding === "Yes" ? "Yes" : "No" // pastikan hanya "yes" atau "no"
+    };
+
+    console.log("Payload to API:", payload);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/v1/stunting`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setResult(data.data);
+      } else {
+        setError(data.message || "Prediction failed.");
+        console.error("API error:", data);
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+      console.error("Network error:", err);
+    }
+    setLoading(false);
   };
 
   return (
@@ -60,7 +101,7 @@ const PredictionPage = () => {
                     Child's Gender <span className="text-red-500">*</span>
                   </label>
                   <select
-                    name="childSex"
+                    name="childGender" // <-- sudah sesuai dengan state
                     value={formData.childGender}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -213,11 +254,146 @@ const PredictionPage = () => {
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+                disabled={loading}
               >
-                Get Assessment
+                {loading ? "Processing..." : "Get Assessment"}
               </button>
             </div>
           </form>
+
+          {/* Hasil Prediksi */}
+          {error && <div className="mt-6 text-red-600">{error}</div>}
+          {result && (
+            <div className="mt-8 bg-white rounded-lg shadow-lg border p-6">
+              {/* Assessment Result Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-green-100 p-2 rounded-full">
+                  <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold">Assessment Result</h2>
+                  <div className="flex items-center gap-2">
+                    <span className={`font-medium ${
+                      result.height_for_age_z_score > -1.0 ? 'text-green-600' :
+                      result.height_for_age_z_score > -2.0 ? 'text-yellow-700' :
+                      result.height_for_age_z_score > -3.0 ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>
+                      {result.height_for_age_z_score > -1.0 ? 'Normal' :
+                       result.height_for_age_z_score > -2.0 ? 'Mild' :
+                       result.height_for_age_z_score > -3.0 ? 'Moderate' :
+                       'Severe'}
+                    </span>
+                    <span className="text-gray-600">•</span>
+                    <span className="text-gray-600">Z-score: {result.height_for_age_z_score.toFixed(2)}</span>
+                  </div>
+                </div>
+                <button className="ml-auto bg-blue-50 text-blue-600 px-4 py-2 rounded-lg flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download PDF
+                </button>
+              </div>
+
+              {/* Status Bar */}
+              <div className="relative h-2 bg-gray-200 rounded-full mb-10"> {/* Increased bottom margin */}
+                <div 
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full" 
+                  style={{width: '100%'}}
+                />
+                <div className="absolute -bottom-8 left-0 text-xs">
+                  <span className="text-red-600 block">Severe</span>
+                  <span className="text-gray-500 text-[10px]">Z-score: &lt; -3.0</span>
+                </div>
+                <div className="absolute -bottom-8 left-1/3 text-xs">
+                  <span className="text-yellow-600 block">Moderate</span>
+                  <span className="text-gray-500 text-[10px]">Z-score: -3.0 to -2.0</span>
+                </div>
+                <div className="absolute -bottom-8 left-2/3 text-xs">
+                  <span className="text-yellow-700 block">Mild</span>
+                  <span className="text-gray-500 text-[10px]">Z-score: -2.0 to -1.0</span>
+                </div>
+                <div className="absolute -bottom-8 right-0 text-xs text-right">
+                  <span className="text-green-600 block">Normal</span>
+                  <span className="text-gray-500 text-[10px]">Z-score: {'>'} -1.0</span>
+                </div>
+              </div>
+
+              {/* Key Observations */}
+              <div className="mt-8">
+                <h3 className="font-semibold text-lg mb-2">Key Observations</h3>
+                <p className="text-gray-700 mb-4">
+                  Your child's growth parameters are within normal range for their age and sex. 
+                  The height-for-age measurement shows healthy development.
+                </p>
+              </div>
+
+              {/* Detailed Recommendations */}
+              <div className="mt-6">
+                <button 
+                  className="flex items-center justify-between w-full text-left font-semibold mb-4"
+                  onClick={() => setShowRecommendations(!showRecommendations)}
+                >
+                  {showRecommendations ? "Hide" : "Show"} detailed recommendations
+                  <svg className="w-5 h-5 transform transition-transform duration-200" 
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style={{ transform: showRecommendations ? 'rotate(180deg)' : '' }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* Recommendations Sections */}
+                {showRecommendations && (
+                  <div className="space-y-6">
+                    {/* Nutritional Recommendations */}
+                    <div className="pl-4 border-l-4 border-green-400">
+                      <h4 className="font-semibold mb-2">1. Nutritional Recommendations</h4>
+                      <ul className="space-y-2 text-gray-700">
+                        <li>• Continue providing a balanced diet with variety of foods</li>
+                        <li>• Ensure adequate calcium intake for ongoing bone development</li>
+                        <li>• Maintain regular meal schedules with healthy snacks as needed</li>
+                        <li>• Continue regular growth monitoring as recommended by your healthcare provider</li>
+                        <li>• Keep encouraging healthy eating habits and physical activity</li>
+                      </ul>
+                    </div>
+
+                    {/* Parental Care Tips */}
+                    <div className="pl-4 border-l-4 border-blue-400">
+                      <h4 className="font-semibold mb-2">2. Parental Care Tips</h4>
+                      <ul className="space-y-2 text-gray-700">
+                        <li>• Continue regular pediatric check-ups as recommended</li>
+                        <li>• Promote positive mealtime environment without pressure</li>
+                        <li>• Encourage family meals and healthy eating habits</li>
+                        <li>• Balance structured activities with free play time</li>
+                        <li>• Be a healthy role model for eating and activity patterns</li>
+                      </ul>
+                    </div>
+
+                    {/* Medical Recommendations */}
+                    <div className="pl-4 border-l-4 border-purple-400">
+                      <h4 className="font-semibold mb-2">3. Medical Recommendations</h4>
+                      <ul className="space-y-2 text-gray-700">
+                        <li>• Maintain standard well-child visit schedule</li>
+                        <li>• Continue normal growth and development monitoring</li>
+                        <li>• Update vaccinations according to recommended schedule</li>
+                        <li>• Discuss nutrition at regular pediatric check-ups</li>
+                        <li>• No special interventions required beyond standard care</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Disclaimer */}
+              <div className="mt-8 text-xs text-gray-500 italic">
+                <strong>Disclaimer:</strong> This tool provides a simulated assessment based on simplified calculations 
+                and is for educational purposes only. Always consult with healthcare professionals for accurate medical advice.
+              </div>
+            </div>
+          )}
           </div>
           {/* End of Form Section */}
           </div>
