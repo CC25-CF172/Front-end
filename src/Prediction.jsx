@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from "./pages/components/Navbar";
 import Footer from "./pages/components/Footer";
@@ -10,6 +11,7 @@ const PredictionPage = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
 
+
   const [formData, setFormData] = useState({
     childGender: '',
     ageMonths: '',
@@ -19,11 +21,13 @@ const PredictionPage = () => {
     currentLength: '',
     exclusiveBreastfeeding: ''
   });
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [recommendation, setRecommendation] = useState(null); // Tambahkan state untuk rekomendasi
   const [error, setError] = useState('');
   const [showRecommendations, setShowRecommendations] = useState(false);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +36,7 @@ const PredictionPage = () => {
       [name]: value
     }));
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,6 +128,7 @@ const PredictionPage = () => {
         ))}
       </div>
     );
+
   };
 
   return (
@@ -136,6 +142,7 @@ const PredictionPage = () => {
           <p className="text-gray-600 max-w-3xl mx-auto">
             Masukkan data pengukuran dan informasi anak Anda untuk mendapatkan asesmen risiko stunting secara personal. 
             Alat ini menggunakan standar pertumbuhan WHO untuk mengevaluasi tinggi badan menurut usia dan parameter penting lainnya.
+
           </p>
         </div>
 
@@ -143,6 +150,7 @@ const PredictionPage = () => {
           {/* Form Section */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm border p-6">
+
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Asesmen Pertumbuhan Anak</h2>
               
           <form onSubmit={handleSubmit}>
@@ -151,15 +159,18 @@ const PredictionPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+
                     Jenis Kelamin Anak <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="childGender"
+
                     value={formData.childGender}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   >
+
                     <option value="">Pilih Jenis Kelamin</option>
                     <option value="male">Laki-laki</option>
                     <option value="female">Perempuan</option>
@@ -168,6 +179,7 @@ const PredictionPage = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+
                     Usia (bulan) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -175,29 +187,35 @@ const PredictionPage = () => {
                     name="ageMonths"
                     value={formData.ageMonths}
                     onChange={handleInputChange}
+
                     placeholder="misal: 24"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     min="0"
                     max="60"
                     required
                   />
+
                   <p className="text-xs text-gray-500 mt-1">Masukkan usia antara 0-60 bulan</p>
+
                 </div>
               </div>
 
               {/* Birth Measurements */}
               <div>
+
                 <h3 className="text-lg font-medium text-gray-900 mb-4">PENGUKURAN SAAT LAHIR</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Berat Lahir (kg) <span className="text-red-500">*</span>
+
                     </label>
                     <input
                       type="number"
                       name="birthWeight"
                       value={formData.birthWeight}
                       onChange={handleInputChange}
+
                       placeholder="misal: 3.2"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       step="0.1"
@@ -209,6 +227,7 @@ const PredictionPage = () => {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
+
                       Panjang Lahir (cm) <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -216,6 +235,7 @@ const PredictionPage = () => {
                       name="birthLength"
                       value={formData.birthLength}
                       onChange={handleInputChange}
+
                       placeholder="misal: 50"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       min="30"
@@ -228,6 +248,7 @@ const PredictionPage = () => {
 
               {/* Current Measurements */}
               <div>
+
                 <h3 className="text-lg font-medium text-gray-900 mb-4">PENGUKURAN SAAT INI</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -239,6 +260,7 @@ const PredictionPage = () => {
                       name="currentWeight"
                       value={formData.currentWeight}
                       onChange={handleInputChange}
+
                       placeholder="misal: 12.5"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       step="0.1"
@@ -250,6 +272,7 @@ const PredictionPage = () => {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
+
                       Tinggi/Panjang Saat Ini (cm) <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -257,6 +280,7 @@ const PredictionPage = () => {
                       name="currentLength"
                       value={formData.currentLength}
                       onChange={handleInputChange}
+
                       placeholder="misal: 85"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       min="40"
@@ -269,6 +293,7 @@ const PredictionPage = () => {
 
               {/* Nutrition History */}
               <div>
+
                 <h3 className="text-lg font-medium text-gray-900 mb-4">RIWAYAT NUTRISI</h3>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -285,6 +310,7 @@ const PredictionPage = () => {
                         className="mr-2 text-blue-600"
                         required
                       />
+
                       Ya
                     </label>
                     <label className="flex items-center">
@@ -297,6 +323,7 @@ const PredictionPage = () => {
                         className="mr-2 text-blue-600"
                         required
                       />
+
                       Tidak
                     </label>
                   </div>
@@ -451,6 +478,7 @@ const PredictionPage = () => {
           <div className="space-y-6">
             {/* About This Tool */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
+
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Tentang Alat Ini</h3>
               <p className="text-gray-600 text-sm mb-4">
                 Alat prediksi ini memberikan asesmen edukatif berdasarkan standar pertumbuhan anak dari 
@@ -471,23 +499,27 @@ const PredictionPage = () => {
 
             {/* Measurement Tips */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
+
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Tips Pengukuran</h3>
               <div className="space-y-3">
                 <div className="flex items-start space-x-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-medium">1</span>
                   <p className="text-gray-600 text-sm">
+
                     Ukur tinggi/panjang badan dengan anak berbaring (di bawah 2 tahun) atau berdiri (di atas 2 tahun)
                   </p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-medium">2</span>
                   <p className="text-gray-600 text-sm">
+
                     Gunakan timbangan digital untuk pengukuran berat badan agar lebih akurat
                   </p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-medium">3</span>
                   <p className="text-gray-600 text-sm">
+
                     Lakukan pengukuran pada waktu yang sama setiap hari untuk hasil yang konsisten
                   </p>
                 </div>
@@ -501,6 +533,7 @@ const PredictionPage = () => {
     </div>
   );
 };
+
 
 export default PredictionPage;
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronDown, ChevronUp, Facebook, Twitter, Instagram, MapPin, Phone, Mail } from "lucide-react";
+
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo3.png";
 
@@ -9,6 +10,7 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Brand Section */}
         <div className="md:col-span-1">
+
           <img
               src={logo}
               alt="Logo"
@@ -78,6 +80,7 @@ const Footer = () => {
           </ul>
         </div>
 
+
         
 
         {/* Contact Us */}
@@ -93,7 +96,9 @@ const Footer = () => {
             <div className="flex items-center gap-3">
               <Phone className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <span className="text-gray-600 text-sm">
+
                 +62 8*********
+
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -110,10 +115,11 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-gray-200">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-500 text-sm">
+
             © 2025 StuntGuard. All rights reserved.
           </p>
           
-          
+       
         </div>
       </div>
     </footer>

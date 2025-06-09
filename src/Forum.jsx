@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import Navbar from "./pages/components/Navbar";
 import Footer from "./pages/components/Footer";
@@ -29,11 +30,8 @@ const ForumPage = () => {
               onClick={() => { window.location.href = '/newforum'; }}
               className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-2xl shadow hover:bg-blue-100 transition"
             >
-              Start New Discussion
-            </button>
-          </div>
-        </div>
-      </section>
+
+
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-10">
         <h1 className="text-center text-2xl mb-8 font-semibold text-[#0A192F]">Forum</h1>
@@ -42,6 +40,7 @@ const ForumPage = () => {
     </div>
       <Footer />
     </div>
+
   );
 };
 

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
@@ -259,6 +260,7 @@ const UnderstandingStuntingAccordion = React.forwardRef((props, ref) => {
         {/* Accordion */}
         <div className="space-y-4">
           {props.accordionData?.map((section) => (
+
             <div
               key={section.id}
               className="bg-gray-100 rounded-lg border border-gray-200 overflow-hidden transition-all duration-200 hover:border-gray-300"
@@ -269,30 +271,15 @@ const UnderstandingStuntingAccordion = React.forwardRef((props, ref) => {
                 className="w-full px-4 sm:px-6 py-4 text-left flex items-center justify-between text-[#0A192F] hover:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
               >
                 <span className="font-medium text-base sm:text-lg">{section.title}</span>
-                <div className="ml-4 flex-shrink-0">
-                  {openSections[section.id] ? (
-                    <ChevronUp className="h-5 w-5 text-blue-500" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5 text-blue-500" />
-                  )}
-                </div>
-              </button>
+
+
               {/* Accordion Content */}
               {openSections[section.id] && (
                 <div className="px-4 sm:px-6 pb-6">
                   <div className="border-t border-gray-200 pt-4">
                     <div className="text-gray-700 leading-relaxed whitespace-pre-line text-sm sm:text-base">
-                      {section.content}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+
+
 });
 
 // ReadyToMonitorSection Responsive
@@ -340,4 +327,6 @@ export default function App() {
       <Footer />
     </div>
   );
+
 }
+
