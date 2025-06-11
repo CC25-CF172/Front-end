@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import Home from './Home';
@@ -21,18 +21,6 @@ import DetailForumPage from "./DetailForum";
 
 
 function App() {
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem("token");
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
   return (
     <Router>
       <Routes>
@@ -58,6 +46,7 @@ function App() {
         <Route path="/newforum" element={<NewForumPage />} />
         <Route path="/updateforum" element={<UpdateForumPage />} />
         <Route path="/detailforum/:id" element={<DetailForumPage />} />
+        
       </Routes>
     </Router>
   );
