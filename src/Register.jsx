@@ -65,7 +65,7 @@ export default function StuntWatchRegister() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">StuntWatch</h1>
+          <h1 className="text-3xl font-bold text-[#0284c7] mb-2">StuntWatch</h1>
           <p className="text-gray-600 text-sm mb-8">Helping monitor child growth and prevent stunting</p>
           <h2 className="text-2xl font-semibold text-gray-900 mb-2">Create an Account</h2>
           <p className="text-gray-600 text-sm">Join StuntWatch to monitor your child's growth</p>
@@ -226,7 +226,7 @@ export default function StuntWatchRegister() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#0284c7] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!agreeToTerms}
             >
               {loading ? (
@@ -274,7 +274,8 @@ export default function StuntWatchRegister() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              <a href="#" className="font-medium text-[#0284c7] hover:text-blue-500"
+                onClick={() => navigate("/login")}>
                 Sign in
               </a>
             </p>

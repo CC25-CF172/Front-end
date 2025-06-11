@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import Home from './Home';
@@ -8,9 +8,31 @@ import User from "./user";
 import LoginPage from "./login";
 import RegisterPage from "./Register";
 import Navbar from "./pages/components/Navbar";
+import ForumPage from "./Forum";
+import ForgotPwdPage from "./ForgotPwd";
+import ResetPasswordInput from "./ResetPwd"; 
+import EditProfilePage from "./EditProfile";
 import ProtectedRoute from "./pages/components/ProtectedRoute";
+import EdukasiNutrisiPage from "./EducationNutrition";
+import ChatBotPage from "./ChatBot";
+import NewForumPage from "./NewForum";
+import UpdateForumPage from "./UpdateForum";
+import DetailForumPage from "./DetailForum";
+
 
 function App() {
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("token");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <Router>
       <Routes>
@@ -27,6 +49,15 @@ function App() {
         <Route path="/user" element={<User />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forum" element={<ForumPage />} />
+        <Route path="/forgotpwd" element={<ForgotPwdPage />} />
+        <Route path="/reset-password" element={<ResetPasswordInput />} />
+        <Route path="/editprofile" element={<EditProfilePage />} />
+        <Route path="/educationnutrition" element={<EdukasiNutrisiPage />} />
+        <Route path="/chatbot" element={<ChatBotPage />} />
+        <Route path="/newforum" element={<NewForumPage />} />
+        <Route path="/updateforum" element={<UpdateForumPage />} />
+        <Route path="/detailforum/:id" element={<DetailForumPage />} />
       </Routes>
     </Router>
   );

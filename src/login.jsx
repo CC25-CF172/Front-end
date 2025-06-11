@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 // Jika sudah punya file api.js, gunakan import berikut:
 import { API_BASE_URL } from "./api"; // Pastikan path sesuai
 import { useNavigate } from "react-router-dom";
@@ -79,7 +80,7 @@ export default function StuntWatchLogin() {
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">StuntWatch</h1>
+          <h1 className="text-3xl font-bold text-[#0284c7] mb-2">StuntWatch</h1>
           <p className="text-gray-600 text-sm mb-8">Helping monitor child growth and prevent stunting</p>
           <h2 className="text-2xl font-semibold text-gray-900 mb-2">Welcome Back</h2>
           <p className="text-gray-600 text-sm">Log in to access your StuntWatch account</p>
@@ -123,9 +124,6 @@ export default function StuntWatchLogin() {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
-                  Forgot password?
-                </a>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -156,6 +154,7 @@ export default function StuntWatchLogin() {
                   </button>
                 </div>
               </div>
+                  <Link to="/forgotpwd" className="text-sm text-blue-600 hover:text-blue-500 mt-1 block">Forgot Password</Link>
             </div>
           </div>
 
@@ -179,7 +178,7 @@ export default function StuntWatchLogin() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#0284c7] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
             >
               <span className="mr-2">→</span>
               Sign in
@@ -219,7 +218,8 @@ export default function StuntWatchLogin() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              <a href="#" className="font-medium text-[#0284c7] hover:text-blue-500"
+                onClick={() => navigate("/register")}>
                 Register
               </a>
             </p>
