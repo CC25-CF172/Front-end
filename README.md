@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# 🚀 STUNTGUARD Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend aplikasi **STUNTGUARD** dibangun menggunakan **React.js**, **Tailwind CSS**, dan dikemas menggunakan **Webpack**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📁 Struktur Direktori Proyek ##
+stuntguard/
+├── .env # Variabel lingkungan
+├── .gitignore # File yang diabaikan Git
+├── node_modules/ # Dependencies proyek
+├── package.json # Metadata proyek & dependencies
+├── package-lock.json # Kunci versi package
+├── postcss.config.js # Konfigurasi PostCSS untuk Tailwind
+├── public/ # File statis (index.html, favicon, dsb.)
+├── src/ # Source code utama React
+│ └── pages/component
+      ├── Navbar.jsx
+      └── Footer.jsx
+      └── ProtectedRoute.jsx
+│ ├── App.jsx
+│ ├── index.jsx
+│ └── index.css
+│ └── app.css
+│ └── Register.jsx
+│ └── login.jsx
+│ └── Home.jsx
+│ └── Prediction.jsx
+│ └── Education.jsx
+│ └── Forum.jsx
+│ └── ChatBot.jsx
+│ └── user.jsx
+│ └── EditProfile.jsx
+│ └── ResetPwd.jsx
+│ └── ForgotPwd.jsx
+│ └── EducattionNutrition.jsx
+│ └── api.js
+│ └── app.test.js
+│ └── reportWebVitals.js
+│ └── setupTest.js
+│ └── NewForum.jsx
+│ └── UpdateForum.jsx
+│ └── DetailForum.jsx
+├── tailwind.config.js # Konfigurasi TailwindCSS
+├── webpack.config.js # Konfigurasi Webpack
+└── README.md
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## ⚙️ Instalasi dan Setup Lingkungan Development ##
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🛠 Prasyarat
 
-### `npm test`
+- Node.js versi 18.x atau terbaru
+- NPM (sudah termasuk dalam Node.js)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 📦 Langkah Instalasi
 
-### `npm run build`
+# 1. Masuk ke direktori proyek
+cd stuntguard
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# 2. Install dependencies
+npm install
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# 3. Jalankan server pengembangan
+npm run start
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🌐 Deployment ke Production (Railway) ##
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+🚀 2. Hosting di Railway
+Railway bisa digunakan untuk menyajikan frontend statis. Ikuti langkah berikut:
+🔸 Langkah Hosting
+1. Login ke Railway – https://railway.app
+2. Create New Project > "Deploy from GitHub Repo" (pastikan sudah push proyek ini ke GitHub)
+3. Pada pengaturan deployment, atur:
+   └──Build Command: npm run build
+   └──Output Directory: dist
+   └──Railway otomatis mendeteksi frontend statis dan menyajikann
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📦 Konfigurasi Tambahan ##
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  1. TailwindCSS dikonfigurasi via tailwind.config.js dan postcss.config.js
+  2. File .env digunakan untuk menyimpan konfigurasi seperti URL backend atau token API.
+💡 Catatan
+  Jika kamu mengalami error seperti Tailwind tidak bekerja:
+  └──@tailwind base;
+  └──@tailwind components;
+  └──@tailwind utilities;

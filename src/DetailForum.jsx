@@ -46,8 +46,8 @@ const ForumDetail = () => {
           },
         });
         const dataReplies = await resReplies.json();
-        const filteredReplies = dataReplies.data.filter(
-          (r) => String(r.forum_id) === id
+        const filteredReplies = (dataReplies.data || []).filter(
+        (r) => String(r.forum_id) === id
         );
         setReplies(filteredReplies);
       } catch (err) {
