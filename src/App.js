@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import './App.css';
-import Home from './Home';
+import "./App.css";
+import Home from "./Home";
 import PredictionPage from "./Prediction";
 import ForumPage from "./Forum";
 import NewForumPage from "./NewForum";
@@ -12,6 +12,8 @@ import LoginPage from "./login";
 import RegisterPage from "./Register";
 import Navbar from "./pages/components/Navbar";
 import ProtectedRoute from "./pages/components/ProtectedRoute";
+import UpdateForumPage from "./UpdateForum";
+import ForumDetailPage from "./DetailForum";
 
 function App() {
   return (
@@ -31,7 +33,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forum" element={<ForumPage />} />
+        <Route path="/updateforum/:id" element={<UpdateForumPage />} />
         <Route path="/newforum" element={<NewForumPage />} />
+        <Route path="/detailforum/:id" element={<ForumDetailPage />} />
         <Route path="/chatbot" element={<ChatbotPage />} />
       </Routes>
     </Router>
