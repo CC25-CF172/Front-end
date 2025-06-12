@@ -6,44 +6,7 @@ Frontend aplikasi **STUNTGUARD** dibangun menggunakan **React.js**, **Tailwind C
 
 ## 📁 Struktur Direktori Proyek ##
 stuntguard/
-├── .env                      # Variabel lingkungan
-├── .gitignore               # File yang diabaikan Git
-├── node_modules/           # Dependencies proyek
-├── package.json            # Metadata proyek & dependencies
-├── package-lock.json       # Kunci versi package
-├── postcss.config.js       # Konfigurasi PostCSS untuk Tailwind
-├── public/                 # File statis (index.html, favicon, dsb.)
-├── src/                    # Source code utama React
-│   ├── App.jsx
-│   ├── app.css
-│   ├── index.css
-│   ├── index.jsx
-│   ├── api.js
-│   ├── app.test.js
-│   ├── reportWebVitals.js
-│   ├── setupTest.js
-│   ├── pages/
-│   │   ├── Register.jsx
-│   │   ├── login.jsx
-│   │   ├── Home.jsx
-│   │   ├── Prediction.jsx
-│   │   ├── Education.jsx
-│   │   ├── Forum.jsx
-│   │   ├── ChatBot.jsx
-│   │   ├── user.jsx
-│   │   ├── EditProfile.jsx
-│   │   ├── ResetPwd.jsx
-│   │   ├── ForgotPwd.jsx
-│   │   ├── EducattionNutrition.jsx
-│   │   ├── NewForum.jsx
-│   │   ├── UpdateForum.jsx
-│   │   └── DetailForum.jsx
-│   └── component/
-│       ├── Navbar.jsx
-│       ├── Footer.jsx
-│       └── ProtectedRoute.jsx
-├── tailwind.config.js      # Konfigurasi TailwindCSS
-├── webpack.config.js       # Konfigurasi Webpack
+
 └── README.md
 
 
@@ -89,3 +52,5 @@ Railway bisa digunakan untuk menyajikan frontend statis. Ikuti langkah berikut:
   └──@tailwind base;
   └──@tailwind components;
   └──@tailwind utilities;
+  └──@tailwind utilities;
+

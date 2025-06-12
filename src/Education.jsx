@@ -4,6 +4,8 @@ import Navbar from './pages/components/Navbar';
 import Footer from './pages/components/Footer';
 import { Calendar, Clock, Search } from 'lucide-react';
 import carosel1 from "./assets/carosel1.jpeg";
+import carosel2 from "./assets/stunting2.png";
+import carosel3 from "./assets/stunting3.jpeg";
 
 const EducationalResources = () => {
   // Scroll ke atas saat halaman di-refresh/mount
@@ -11,12 +13,12 @@ const EducationalResources = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
 
-  const [activeTab, setActiveTab] = useState('Riset');
+  const [activeTab, setActiveTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   
-  const tabs = ['Riset', 'Nutrisi', 'Komunitas'];
+  const tabs = ['All','Riset', 'Nutrisi', 'Komunitas'];
 
   
   const articles = [
@@ -26,26 +28,26 @@ const EducationalResources = () => {
       image: carosel1,
       date: '10 Mei 2025',
       readTime: '5 menit baca',
-      title: 'Peran Ibu dalam Mencegah Stunting Sejak Masa Sekarang',
+      title: 'Pencegahan dan Penanganan Stunting pada Anak di Indonesia',
       description: 'Peneliti menemukan hubungan penting antara kesehatan mikrobioma usus dan pertumbuhan anak yang dapat membuka strategi pencegahan baru.',
       categoryColor: 'bg-blue-500',
-      link: '/educationnutrition'
+      link: '/educationriset'
     },
     {
       id: 2,
       category: 'Komunitas',
-      image: carosel1,
+      image: carosel2,
       date: '7 Mei 2025',
       readTime: '4 menit baca',
-      title: 'Peran Ibu dalam Mencegah Stunting Sejak Masa Sekarang',
+      title: 'Peran Komunitas dalam Mencegah Stunting: Kunci Masa Depan Anak yang Lebih Sehat',
       description: 'Program edukasi nutrisi berbasis komunitas memberikan dampak signifikan dalam menurunkan angka stunting di desa-desa Indonesia.',
       categoryColor: 'bg-teal-500',
-      link: '/educationnutrition'
+      link: '/educationcommunity'
     },
     {
       id: 3,
       category: 'Nutrisi',
-      image: carosel1,
+      image: carosel3,
       date: '5 Mei 2025',
       readTime: '6 menit baca',
       title: 'Peran Ibu dalam Mencegah Stunting Sejak Masa Sekarang',

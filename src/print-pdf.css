@@ -1,0 +1,33 @@
+.print-pdf * {
+  font-size: 13px !important;
+  box-sizing: border-box;
+}
+.print-pdf {
+  max-width: 700px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  background: #fff !important;
+  color: #222 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 18px !important;
+}
+.print-pdf .flex, .print-pdf .grid, .print-pdf .sm\:flex, .print-pdf .sm\:grid, .print-pdf .lg\:grid {
+  display: block !important;
+}
+.print-pdf [class*="col-span"], 
+.print-pdf [class*="grid-cols"], 
+.print-pdf [class*="gap-"], 
+.print-pdf [class*="flex-"], 
+.print-pdf [class*="items-"], 
+.print-pdf [class*="justify-"] {
+  all: unset !important;
+}
+.print-pdf .relative, .print-pdf .absolute {
+  position: static !important;
+}
+.print-pdf .hidden { display: none !important; }
+.print-pdf .w-full, .print-pdf .max-w-7xl, .print-pdf .max-w-6xl, .print-pdf .max-w-3xl, .print-pdf .max-w-md {
+  width: 100% !important;
+  max-width: 100% !important;
+}

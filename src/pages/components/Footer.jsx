@@ -48,7 +48,7 @@ const Footer = () => {
                 to="/prediction"
                 className="text-gray-600 hover:text-blue-500 text-sm transition-colors"
               >
-                Prediction Tool
+                Prediction
               </Link>
             </li>
             <li>
@@ -56,7 +56,7 @@ const Footer = () => {
                 to="/education"
                 className="text-gray-600 hover:text-blue-500 text-sm transition-colors"
               >
-                Education Resources
+                Education
               </Link>
             </li>
             <li>
@@ -64,7 +64,7 @@ const Footer = () => {
                 to="/forum"
                 className="text-gray-600 hover:text-blue-500 text-sm transition-colors"
               >
-                Discussion Forum
+                Forum
               </Link>
             </li>
             <li>
@@ -72,7 +72,7 @@ const Footer = () => {
                 to="/chatbot"
                 className="text-gray-600 hover:text-blue-500 text-sm transition-colors"
               >
-                Health Chatbot
+                Chatbot
               </Link>
             </li>
           </ul>
@@ -93,7 +93,7 @@ const Footer = () => {
             <div className="flex items-center gap-3">
               <Phone className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <span className="text-gray-600 text-sm">
-                +62 8*********
+                +62 857-0222-0093
               </span>
             </div>
             <div className="flex items-center gap-3">

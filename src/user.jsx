@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Navbar from './pages/components/Navbar';
 import Footer from './pages/components/Footer';
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,9 @@ export default function ChildGrowthDashboard() {
     lastDate: "-",
     currentStatus: "-",
   });
+
+  // Ref untuk chart export
+  const chartRef = useRef();
 
   // Scroll ke atas saat halaman di-refresh/mount
   useEffect(() => {
@@ -70,8 +73,6 @@ export default function ChildGrowthDashboard() {
             .then(result => {
               if (result.success && Array.isArray(result.data)) {
                 setHistory(result.data);
-                console.log("Data history:", result.data);
-
                 if (result.data.length > 0) {
                   const sorted = [...result.data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                   setStats({
@@ -181,6 +182,29 @@ export default function ChildGrowthDashboard() {
     },
   };
 
+  // Fungsi download chart as image
+  const handleDownloadChart = () => {
+    // Chart.js v4: gunakan chartRef.current.canvas
+    // chartRef.current adalah instance Chart.js dari react-chartjs-2 v4+
+    // chartRef.current.canvas = canvas element
+    try {
+      const chartInstance = chartRef.current;
+      if (!chartInstance) return;
+      // Untuk react-chartjs-2 v4, gunakan chartRef.current.canvas
+      const url = chartInstance.canvas.toDataURL("image/png", 1.0);
+
+      // Buat link download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "grafik-pertumbuhan-anak.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      alert("Gagal mengunduh grafik.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -213,14 +237,17 @@ export default function ChildGrowthDashboard() {
           <div className="lg:col-span-2 bg-white p-4 rounded-xl shadow">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-semibold text-lg">Grafik Pertumbuhan Anak</h2>
-              {/* <a href="#" className="text-blue-500 text-sm">Lihat detail grafik →</a> */}
             </div>
             <div className="flex flex-row items-start gap-4">
               <div className="bg-gray-100 h-64 flex flex-col items-center justify-center rounded-md text-sm text-gray-500 flex-1">
                 {history.length === 0 ? (
                   <span>Belum ada data pertumbuhan.</span>
                 ) : (
-                  <Line data={chartData} options={chartOptions} />
+                  <Line
+                    ref={chartRef}
+                    data={chartData}
+                    options={chartOptions}
+                  />
                 )}
               </div>
               <div className="flex flex-col gap-2 mt-4">
@@ -250,8 +277,12 @@ export default function ChildGrowthDashboard() {
               <button className="bg-[#0284c7] hover:bg-blue-600 text-white w-full py-2 rounded-md text-sm font-medium"
               onClick={() => navigate("/prediction")}
               >Asesmen Baru</button>
-              <button className="border border-blue-400 text-blue-500 w-full py-2 rounded-md text-sm">Unduh Grafik Pertumbuhan</button>
-
+              <button
+                className="border border-blue-400 text-blue-500 w-full py-2 rounded-md text-sm"
+                onClick={handleDownloadChart}
+              >
+                Unduh Grafik Pertumbuhan
+              </button>
             </div>
           </div>
         </div>
@@ -288,9 +319,6 @@ export default function ChildGrowthDashboard() {
             </tbody>
           </table>
         </div>
-
-        {/* Resources */}
-        
       </div>
       <br />
       <Footer />

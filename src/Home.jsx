@@ -55,8 +55,8 @@ const HeroSection = ({ accordionRef }) => {
       <div className="flex flex-col-reverse md:flex-row items-center justify-between max-w-7xl mx-auto w-full gap-10 md:gap-20 px-2 sm:px-8">
         {/* Kiri: Teks */}
         <div className="w-full md:w-1/2 flex flex-col justify-center mt-8 md:mt-0">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 text-[#0A192F] leading-tight text-center md:text-left">
-            Cegah <span className="text-[#0284c7]">Stunting</span>.<br />
+          <h1 className="text-3xl sm:text-5xl md:text-5xl font-bold mb-4 text-[#0A192F] leading-tight text-center md:text-left">
+            Cegah <span className="text-[#0284c7]">Stunting</span><br />
             Dukung Pertumbuhan<br />Sehat.
           </h1>
           <p className="mb-8 text-gray-700 text-base sm:text-lg max-w-xl text-center md:text-left mx-auto md:mx-0">
@@ -236,29 +236,183 @@ const UnderstandingStuntingAccordion = React.forwardRef((props, ref) => {
   const [openSections, setOpenSections] = useState({});
 
   const toggleSection = (sectionId) => {
-    setOpenSections(prev => ({
+    setOpenSections((prev) => ({
       ...prev,
-      [sectionId]: !prev[sectionId]
+      [sectionId]: !prev[sectionId],
     }));
   };
 
-  // ...accordionData tetap...
+  const accordionData = [
+    {
+      id: 'what-is-stunting',
+      title: 'Apa itu stunting?',
+      content: `Stunting adalah bentuk malnutrisi yang terjadi ketika anak memiliki tinggi badan yang jauh lebih pendek dari rata-rata tinggi untuk kelompok usianya. Ini didefinisikan sebagai skor-z tinggi badan menurut usia di bawah -2 standar deviasi dari median Standar Pertumbuhan Anak WHO.
 
-  // (accordionData tidak diubah, tetap seperti sebelumnya)
+Stunting bukan hanya soal tubuh pendek - kondisi ini mencerminkan malnutrisi kronis selama periode paling krusial dalam pertumbuhan dan perkembangan awal kehidupan. Stunting umumnya tidak dapat diperbaiki setelah anak berusia 2 tahun dan dapat berdampak jangka panjang pada perkembangan fisik dan kognitif anak.
+
+Ciri utama stunting meliputi:
+• Tinggi badan di bawah rentang yang diharapkan untuk usianya  
+• Sering disertai keterlambatan perkembangan motorik dan kognitif  
+• Lebih rentan terhadap infeksi dan penyakit  
+• Kapasitas belajar dan prestasi sekolah yang menurun`,
+    },
+    {
+      id: 'common-causes',
+      title: 'Penyebab umum stunting',
+      content: `Stunting disebabkan oleh berbagai faktor yang saling berkaitan dan memengaruhi pertumbuhan serta perkembangan anak:
+
+**Faktor Gizi:**
+• Asupan gizi ibu yang tidak memadai selama kehamilan  
+• Praktik menyusui yang buruk dan penyapihan dini  
+• Pemberian makanan pendamping yang kurang setelah usia 6 bulan  
+• Kekurangan mikronutrien (zat besi, seng, vitamin A)  
+• Ketahanan pangan rendah dan akses terbatas terhadap makanan bergizi  
+
+**Faktor Kesehatan:**
+• Infeksi yang sering (diare, infeksi saluran pernapasan)  
+• Praktik sanitasi dan kebersihan yang buruk  
+• Akses dan kualitas layanan kesehatan yang tidak memadai  
+• Infeksi parasit  
+
+**Faktor Sosial Ekonomi:**
+• Kemiskinan dan keterbatasan sumber daya rumah tangga  
+• Tingkat pendidikan ibu yang rendah  
+• Infrastruktur air dan sanitasi yang buruk  
+• Akses layanan kesehatan yang terbatas  
+
+**Faktor Lingkungan:**
+• Kondisi tempat tinggal yang tidak layak  
+• Paparan terhadap racun lingkungan  
+• Ketahanan pangan yang dipengaruhi oleh iklim`,
+    },
+    {
+      id: 'prevention-strategies',
+      title: 'Strategi pencegahan',
+      content: `Pencegahan stunting memerlukan pendekatan menyeluruh yang mencakup berbagai faktor:
+
+**Selama Kehamilan:**
+• Pastikan ibu mendapat nutrisi dan kenaikan berat badan yang cukup  
+• Berikan vitamin dan suplemen prenatal (asam folat, zat besi)  
+• Kunjungan rutin ke pelayanan kesehatan selama kehamilan  
+• Cegah dan obati infeksi pada ibu  
+
+**Masa Bayi Awal (0-6 bulan):**
+• Promosikan ASI eksklusif selama 6 bulan pertama  
+• Pastikan teknik menyusui yang benar dan dukungan menyusui  
+• Berikan perawatan pasca melahirkan bagi ibu dan bayi  
+• Pantau pertumbuhan bayi secara rutin  
+
+**Setelah 6 Bulan:**
+• Perkenalkan makanan pendamping ASI yang sesuai sambil tetap menyusui  
+• Pastikan pola makan yang beragam dan bergizi  
+• Jaga kebersihan saat menyiapkan makanan  
+• Pemantauan pertumbuhan dan imunisasi secara rutin  
+
+**Tingkat Komunitas:**
+• Tingkatkan infrastruktur air, sanitasi, dan kebersihan  
+• Perkuat sistem layanan kesehatan dan aksesnya  
+• Laksanakan program edukasi gizi  
+• Atasi masalah kemiskinan dan ketahanan pangan  
+• Berdayakan perempuan dan tingkatkan status mereka  
+
+**Tingkat Kebijakan:**
+• Laksanakan program gizi nasional  
+• Perkuat makanan pokok dengan nutrisi penting  
+• Berikan perlindungan sosial bagi keluarga rentan  
+• Integrasikan layanan gizi lintas sektor`,
+    },
+    {
+      id: 'impact-development',
+      title: 'Dampak pada perkembangan anak',
+      content: `Stunting memiliki dampak jangka panjang yang melampaui masa kanak-kanak:
+
+**Perkembangan Fisik:**
+• Tinggi badan dan ukuran tubuh dewasa yang lebih kecil  
+• Risiko lebih tinggi terhadap obesitas dan penyakit kronis di masa depan  
+• Fungsi sistem imun yang terganggu  
+• Risiko kematian lebih tinggi di masa anak-anak  
+• Kapasitas kerja fisik yang berkurang saat dewasa  
+
+**Perkembangan Kognitif:**
+• Keterlambatan perkembangan motorik dan bahasa  
+• Kemampuan kognitif dan skor IQ yang lebih rendah  
+• Prestasi akademik dan hasil sekolah yang buruk  
+• Kapasitas belajar dan fungsi memori terbatas  
+• Kesulitan dalam berpikir kritis dan memecahkan masalah  
+
+**Dampak Ekonomi:**
+• Potensi pendapatan saat dewasa lebih rendah (hingga 20%)  
+• Produktivitas dan kontribusi ekonomi menurun  
+• Biaya kesehatan meningkat sepanjang hidup  
+• Kemiskinan yang berlanjut antar generasi  
+• Pertumbuhan ekonomi nasional yang terhambat  
+
+**Dampak Sosial:**
+• Kesempatan pendidikan dan karier terbatas  
+• Kualitas hidup dan kesejahteraan menurun  
+• Stigma sosial dan diskriminasi  
+• Dampak pada kesehatan mental dan harga diri  
+• Partisipasi dalam kegiatan masyarakat berkurang  
+
+**Dampak Jangka Panjang:**
+• Risiko lebih tinggi terhadap penyakit tidak menular  
+• Hasil kesehatan reproduksi yang buruk  
+• Risiko komplikasi kehamilan yang lebih tinggi  
+• Penularan malnutrisi ke generasi berikutnya`,
+    },
+    {
+      id: 'global-indonesia-data',
+      title: 'Data stunting global dan Indonesia',
+      content: `Stunting masih menjadi tantangan kesehatan global yang signifikan dengan data yang mengkhawatirkan:
+
+**Statistik Global:**
+• Sekitar 149 juta anak di bawah usia 5 tahun mengalami stunting di seluruh dunia (2020)  
+• 22% anak secara global terdampak stunting  
+• 75% anak stunting hidup di Sub-Sahara Afrika dan Asia Selatan  
+• Kemajuan penurunan stunting berjalan lambat namun stabil dalam satu dekade terakhir  
+
+**Data Spesifik Indonesia:**
+• Indonesia memiliki salah satu tingkat stunting tertinggi di Asia Tenggara  
+• Prevalensi nasional stunting: sekitar 24,4% (2021)  
+• Ini berdampak pada sekitar 5,3 juta anak di bawah usia 5 tahun  
+• Daerah pedesaan cenderung memiliki tingkat stunting lebih tinggi dibandingkan perkotaan  
+• Provinsi di wilayah timur umumnya menunjukkan prevalensi lebih tinggi  
+
+**Variasi Regional di Indonesia:**
+• Nusa Tenggara Timur: ~35-40% tingkat stunting  
+• Sulawesi Barat: ~35% tingkat stunting  
+• Aceh: ~30-35% tingkat stunting  
+• Jakarta dan Bali: Tingkat lebih rendah sekitar 15-20%  
+
+**Tren dan Perkembangan:**
+• Indonesia menunjukkan perbaikan bertahap dalam satu dekade terakhir  
+• Target pemerintah: Menurunkan stunting menjadi 14% pada 2024  
+• Berbagai program nasional telah diterapkan termasuk intervensi gizi spesifik  
+• Fokus ditingkatkan pada program 1.000 hari pertama kehidupan  
+• Program gizi berbasis masyarakat diperkuat  
+
+**Faktor Penyumbang di Indonesia:**
+• Kesenjangan geografis dan akses layanan  
+• Ketimpangan sosial ekonomi  
+• Praktik pemberian makan yang dipengaruhi budaya  
+• Tantangan infrastruktur di daerah terpencil`,
+    },
+  ];
 
   return (
-    <section ref={ref} className="py-8 sm:py-12 md:py-16 bg-white text-[#0A192F] px-2 sm:px-4">
-      <div className="max-w-6xl mx-auto px-0 sm:px-8">
+    <section ref={ref} className="py-16 bg-white text-[#0A192F]">
+      <div className="max-w-6xl mx-auto px-8">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">Memahami Stunting</h2>
-          <p className="text-gray-700 max-w-2xl mx-auto text-sm sm:text-base">
-            Pelajari lebih lanjut tentang stunting, penyebab, strategi pencegahan, dan dampaknya pada perkembangan anak.
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">Penjelasan Stunting</h2>
+          <p className="text-gray-700 max-w-2xl mx-auto">
+            Pelajari lebih lanjut tentang stunting, penyebabnya, strategi pencegahan, dan dampaknya terhadap tumbuh kembang anak.
           </p>
         </div>
+
         {/* Accordion */}
         <div className="space-y-4">
-          {props.accordionData?.map((section) => (
+          {accordionData.map((section) => (
             <div
               key={section.id}
               className="bg-gray-100 rounded-lg border border-gray-200 overflow-hidden transition-all duration-200 hover:border-gray-300"
@@ -266,9 +420,9 @@ const UnderstandingStuntingAccordion = React.forwardRef((props, ref) => {
               {/* Accordion Header */}
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full px-4 sm:px-6 py-4 text-left flex items-center justify-between text-[#0A192F] hover:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                className="w-full px-6 py-4 text-left flex items-center justify-between text-[#0A192F] hover:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
               >
-                <span className="font-medium text-base sm:text-lg">{section.title}</span>
+                <span className="font-medium text-lg">{section.title}</span>
                 <div className="ml-4 flex-shrink-0">
                   {openSections[section.id] ? (
                     <ChevronUp className="h-5 w-5 text-blue-500" />
@@ -277,11 +431,12 @@ const UnderstandingStuntingAccordion = React.forwardRef((props, ref) => {
                   )}
                 </div>
               </button>
+
               {/* Accordion Content */}
               {openSections[section.id] && (
-                <div className="px-4 sm:px-6 pb-6">
+                <div className="px-6 pb-6">
                   <div className="border-t border-gray-200 pt-4">
-                    <div className="text-gray-700 leading-relaxed whitespace-pre-line text-sm sm:text-base">
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
                       {section.content}
                     </div>
                   </div>
