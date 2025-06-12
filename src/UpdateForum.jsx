@@ -5,7 +5,7 @@ import { API_BASE_URL } from "./api";
 import Footer from "./pages/components/Footer";
 
 const UpdateForumPage = () => {
-  const { id } = useParams(); // ambil ID dari URL
+  const { id } = useParams(); 
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
