@@ -222,7 +222,7 @@ const ForumPage = () => {
                       </p>
                       <button
                         onClick={(e) => {
-                          e.stopPropagation(); // Agar klik tidak memicu navigasi dari card
+                          e.stopPropagation();
                           window.location.href = `/detailforum/${forum.id}`;
                         }}
                         className="flex items-center gap-2 text-blue-500 hover:underline"
