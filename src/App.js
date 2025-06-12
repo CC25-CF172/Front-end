@@ -18,6 +18,8 @@ import ChatBotPage from "./ChatBot";
 import NewForumPage from "./NewForum";
 import UpdateForumPage from "./UpdateForum";
 import DetailForumPage from "./DetailForum";
+import EducationCommunityPage from "./EducationCommunity";
+import EducationRisetPage from "./EducationRiset";
 
 
 function App() {
@@ -42,6 +44,8 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordInput />} />
         <Route path="/editprofile" element={<EditProfilePage />} />
         <Route path="/educationnutrition" element={<EdukasiNutrisiPage />} />
+        <Route path="/educationcommunity" element={<EducationCommunityPage />} />
+        <Route path="/educationriset" element={<EducationRisetPage />} />
         <Route path="/chatbot" element={<ChatBotPage />} />
         <Route path="/newforum" element={<NewForumPage />} />
         <Route path="/updateforum" element={<UpdateForumPage />} />

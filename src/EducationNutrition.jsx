@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "./pages/components/Navbar";
 import Footer from "./pages/components/Footer";
 import { useEffect } from "react";
-import gambar1 from "./assets/gambarEducation1.jpg";
+import gambar1 from "./assets/stunting3.jpeg";
 
 const EducationNutrition = () => {
     useEffect(() => {
