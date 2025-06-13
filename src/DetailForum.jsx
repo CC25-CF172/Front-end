@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import Navbar from "./pages/components/Navbar";
 import { API_BASE_URL } from "./api";
 import { FaTrashAlt, FaEdit, FaCommentDots } from "react-icons/fa";
@@ -23,15 +24,16 @@ const formatRelativeTime = (dateString) => {
 const ForumDetail = () => {
   const { id } = useParams();
   const [detail, setDetail] = useState(null);
-  const [replies, setReplies] = useState([]);
+  const [reply, setReply] = useState([]);
   const [replyContent, setReplyContent] = useState("");
   const [editingReplyId, setEditingReplyId] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [editedReplyContent, setEditedReplyContent] = useState("");
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchForumDetail = async () => {
+    const ForumDetail = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/v1/forum/${id}`, {
           method: "GET",
@@ -48,7 +50,7 @@ const ForumDetail = () => {
       }
     };
 
-    const fetchReplies = async () => {
+    const Reply = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/v1/forum-replies`, {
           method: "GET",
@@ -58,14 +60,14 @@ const ForumDetail = () => {
         });
         const data = await res.json();
         const filtered = data.data.filter((r) => String(r.forum_id) === id);
-        setReplies(filtered);
+        setReply(filtered);
       } catch (err) {
         console.error("Gagal memuat komentar:", err);
       }
     };
 
-    fetchForumDetail();
-    fetchReplies();
+    ForumDetail();
+    Reply();
   }, [id, token]);
 
   const handleSubmitComment = async (e) => {
@@ -85,7 +87,7 @@ const ForumDetail = () => {
 
       const data = await res.json();
       if (data.success) {
-        setReplies((prev) => [...prev, data.data]);
+        setReply((prev) => [...prev, data.data]);
         setReplyContent("");
       }
     } catch (err) {
@@ -98,18 +100,15 @@ const ForumDetail = () => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/v1/forum-replies/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/v1/forum-replies/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (res.ok) {
-        setReplies((prev) => prev.filter((r) => r.id !== id));
+        setReply((prev) => prev.filter((r) => r.id !== id));
       } else {
         console.error("Gagal menghapus komentar");
       }
@@ -120,23 +119,20 @@ const ForumDetail = () => {
 
   const handleUpdateComment = async (id) => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/v1/forum-replies/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            content: editedReplyContent,
-          }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/v1/forum-replies/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          content: editedReplyContent,
+        }),
+      });
 
       const data = await res.json();
       if (data.success) {
-        setReplies((prev) =>
+        setReply((prev) =>
           prev.map((r) =>
             r.id === id ? { ...r, content: editedReplyContent } : r
           )
@@ -148,6 +144,18 @@ const ForumDetail = () => {
       console.error("Error saat update komentar:", err);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setCurrentUserId(decoded.id);
+      } catch (err) {
+        console.error("Gagal decode token", err);
+      }
+    }
+  }, []);
 
   if (loading || !detail) {
     return (
@@ -180,7 +188,7 @@ const ForumDetail = () => {
             />
             <div>
               <p className="font-semibold text-gray-800 text-sm sm:text-base">
-                Anonymous
+                {detail.user_name}
               </p>
               <p className="text-xs sm:text-sm text-gray-500">
                 Diposting {formatRelativeTime(detail.created_at)}
@@ -193,19 +201,19 @@ const ForumDetail = () => {
           </p>
           <div className="flex items-center gap-2 mb-4 text-sm sm:text-base">
             <FaCommentDots className="text-blue-500" />
-            <span className="text-sm text-blue-600">{replies.length}</span>
+            <span className="text-sm text-blue-600">{reply.length}</span>
           </div>
           <hr className="my-6" />
 
           <p className="text-xl font-semibold mb-4">
-            Komentar ({replies.length})
+            Komentar ({reply.length})
           </p>
 
           <div className="space-y-4 mb-6">
-            {replies.length === 0 ? (
+            {reply.length === 0 ? (
               <p className="text-gray-500 italic">Belum ada komentar.</p>
             ) : (
-              replies.map((reply) => (
+              reply.map((reply) => (
                 <div
                   key={reply.id}
                   className="bg-gray-100 p-3 rounded flex justify-between items-start"
@@ -218,7 +226,7 @@ const ForumDetail = () => {
                     />
                     <div>
                       <p className="font-semibold text-gray-800 text-sm">
-                        Anonymous
+                        {reply.user_name}
                       </p>
                       <p className="text-xs text-gray-500 mb-2">
                         {formatRelativeTime(reply.created_at)}
@@ -257,22 +265,30 @@ const ForumDetail = () => {
                   </div>
 
                   <div className="flex items-end gap-2 ml-4">
-                    <button
-                      className="text-blue-500 text-sm flex items-center"
-                      onClick={() => {
-                        setEditingReplyId(reply.id);
-                        setEditedReplyContent(reply.content);
-                      }}
-                    >
-                      <FaEdit className="mr-1" /> Ubah
-                    </button>
-                    <p className="text-gray-400"> | </p>
-                    <button
-                      className="text-red-500 text-sm flex items-center"
-                      onClick={() => handleDeleteComment(reply.id)}
-                    >
-                      <FaTrashAlt className="mr-1" /> Hapus
-                    </button>
+                    {reply.user_id === currentUserId && (
+                      <>
+                        <button
+                          className="text-blue-500 text-sm flex items-center"
+                          onClick={() => {
+                            setEditingReplyId(reply.id);
+                            setEditedReplyContent(reply.content);
+                          }}
+                        >
+                          <FaEdit className="mr-1" /> Ubah
+                        </button>
+                        <p className="text-gray-400"> | </p>
+                      </>
+                    )}
+
+                    {(reply.user_id === currentUserId ||
+                      detail.user_id === currentUserId) && (
+                      <button
+                        className="text-red-500 text-sm flex items-center"
+                        onClick={() => handleDeleteComment(reply.id)}
+                      >
+                        <FaTrashAlt className="mr-1" /> Hapus
+                      </button>
+                    )}
                   </div>
                 </div>
               ))

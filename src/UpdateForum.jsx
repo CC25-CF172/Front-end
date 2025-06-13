@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Navbar from "./pages/components/Navbar";
 import { API_BASE_URL } from "./api";
 import Footer from "./pages/components/Footer";
 
 const UpdateForumPage = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,7 +53,15 @@ const UpdateForumPage = () => {
   return (
     <>
       <Navbar />
-      <div className="body bg-slate-100">
+      <div className="body bg-gray-50">
+        <div className="max-w-3xl mx-auto bg-gray-50 pt-2 text-left px-6">
+          <Link
+            to="/forum"
+            className="text-blue-600 hover:underline text-base md:text-lg inline-block mb-2"
+          >
+            ← Kembali ke Forum
+          </Link>
+        </div>
         <div className="wrapper mx-auto max-w-3xl p-6 py-10">
           <form
             onSubmit={handleSubmit}
