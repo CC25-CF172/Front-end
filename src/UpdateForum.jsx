@@ -7,7 +7,6 @@ import Footer from "./pages/components/Footer";
 const UpdateForumPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
