@@ -46,7 +46,14 @@ function App() {
         <Route path="/educationnutrition" element={<EdukasiNutrisiPage />} />
         <Route path="/educationcommunity" element={<EducationCommunityPage />} />
         <Route path="/educationriset" element={<EducationRisetPage />} />
-        <Route path="/chatbot" element={<ChatBotPage />} />
+        <Route
+          path="/chatbot"
+          element={
+            <ProtectedRoute>
+              <ChatBotPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/newforum" element={<NewForumPage />} />
         <Route path="/updateforum" element={<UpdateForumPage />} />
         <Route path="/detailforum/:id" element={<DetailForumPage />} />

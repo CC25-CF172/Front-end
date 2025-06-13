@@ -28,7 +28,7 @@ const ChatMessage = ({ sender, text, options, onOptionClick, isTyping }) => {
       <div
         className={`max-w-md p-4 rounded-xl shadow-md ${
           isUser
-            ? "bg-[#0284c7] text-white"
+            ? "bg-blue-500 text-white"
             : "bg-gray-50 text-gray-800 border border-gray-200"
         }`}
       >
@@ -135,7 +135,7 @@ const ChatbotPage = () => {
     <>
       <Navbar />
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-sky-500 via-sky-600 to-green-400 py-14 font-sans">
+      <section className="bg-gradient-to-r from-sky-500 via-sky-600 to-green-400 py-10 font-sans">
         <div className="w-full flex justify-center items-center mb-6">
           <div className="max-w-4xl px-10 text-center">
             <h1 className="text-4xl font-bold mb-2 text-white">
@@ -150,10 +150,10 @@ const ChatbotPage = () => {
       </section>
 
       {/* Chat Area */}
-      <div className="py-6 bg-gray-50">
+      <div className="bg-gray-50 py-4 px-2 sm:px-4">
         <div className="bg-white flex flex-col max-w-4xl mx-auto p-4 rounded-lg shadow-inner overflow-hidden mt-2 h-screen">
           <div
-            className="flex-1.5 overflow-y-auto space-y-2 pr-2"
+            className="flex-1 overflow-y-auto space-y-2 pr-1 sm:pr-2"
             ref={chatContainerRef}
           >
             {messages.map((msg, index) => (
@@ -178,7 +178,7 @@ const ChatbotPage = () => {
               placeholder="Tanyakan sesuatu..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
+              className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
             <button
               type="submit"
