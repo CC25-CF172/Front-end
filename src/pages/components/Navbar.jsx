@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowDown, IoIosMenu, IoIosClose } from "react-icons/io";
 import logo from "../../assets/logo3.png";
+import { API_BASE_URL } from "../../api";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,18 +15,49 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const fetchProfile = async (token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/profile`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        const { name, email } = result.data;
+        setFullname(name);
+        setEmail(email);
+        localStorage.setItem("fullname", name);
+        localStorage.setItem("email", email);
+      } else {
+        console.error("Failed to fetch profile:", result.message);
+        handleLogout();
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      handleLogout();
+    }
+  };
+
   // Check login status
   useEffect(() => {
-    const checkLoginStatus = () => {
+    const checkLoginStatus = async () => {
       const token = localStorage.getItem("token");
       const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-      const storedFullname = localStorage.getItem("fullname");
-      const storedEmail = localStorage.getItem("email");
-      
+
       if (token && loggedIn) {
         setIsLoggedIn(true);
-        setFullname(storedFullname);
-        setEmail(storedEmail);
+        const storedFullname = localStorage.getItem("fullname");
+        const storedEmail = localStorage.getItem("email");
+        if (storedFullname && storedEmail) {
+          setFullname(storedFullname);
+          setEmail(storedEmail);
+        } else {
+          await fetchProfile(token);
+        }
       } else {
         setIsLoggedIn(false);
         setFullname(null);
@@ -71,13 +103,13 @@ const Navbar = () => {
     localStorage.removeItem("fullname");
     localStorage.removeItem("email");
     localStorage.removeItem("isLoggedIn");
-    
+
     // Update state
     setIsLoggedIn(false);
     setFullname(null);
     setEmail(null);
     setIsDropdownOpen(false);
-    
+
     // Redirect to login
     navigate("/login");
   };
@@ -121,9 +153,8 @@ const Navbar = () => {
               <li key={nav.to} className="relative">
                 <Link
                   to={nav.to}
-                  className={`hover:text-blue-500 transition-colors duration-300 ${
-                    isActive ? "text-blue-600 font-bold" : ""
-                  }`}
+                  className={`hover:text-blue-500 transition-colors duration-300 ${isActive ? "text-blue-600 font-bold" : ""
+                    }`}
                 >
                   {nav.label}
                   <span
@@ -163,12 +194,11 @@ const Navbar = () => {
                 <FaUserCircle className="text-lg text-[#0284c7] bg-white rounded-full" style={{ background: "#fff" }} />
                 <span className="max-w-32 truncate">{getDisplayName()}</span>
                 <IoIosArrowDown
-                  className={`text-base transition-transform duration-200 ${
-                    isDropdownOpen ? "rotate-180" : ""
-                  }`}
+                  className={`text-base transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""
+                    }`}
                 />
               </button>
-              
+
               {/* Dropdown Menu */}
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2 text-sm z-50">
@@ -176,7 +206,7 @@ const Navbar = () => {
                     <p className="font-medium text-gray-900 truncate">{getDisplayName()}</p>
                     {email && <p className="text-xs text-gray-500 truncate">{email}</p>}
                   </div>
-                  
+
                   <Link
                     to="/user"
                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors"
@@ -185,28 +215,28 @@ const Navbar = () => {
                     <FaUserCircle className="text-[#0284c7]" />
                     Your Profile
                   </Link>
-                  
+
                   <Link
                     to="/editprofile"
                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors"
                     onClick={() => setIsDropdownOpen(false)}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" className="text-[#0284c7]">
-                      <circle cx="12" cy="12" r="3"/>
-                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
                     Settings
                   </Link>
-                  
+
                   <div className="border-t border-gray-100 mt-1 pt-1">
                     <button
                       onClick={handleLogout}
                       className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 transition-colors"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16,17 21,12 16,7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16,17 21,12 16,7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
                       </svg>
                       Sign out
                     </button>
@@ -231,7 +261,7 @@ const Navbar = () => {
               >
                 <IoIosClose />
               </button>
-              
+
               <ul className="flex flex-col gap-4 text-base">
                 {navLinks.map((nav) => {
                   const isActive = location.pathname === nav.to;
@@ -239,9 +269,8 @@ const Navbar = () => {
                     <li key={nav.to} className="relative">
                       <Link
                         to={nav.to}
-                        className={`hover:text-[#0284c7] transition-colors duration-300 ${
-                          isActive ? "text-[#0284c7] font-bold" : ""
-                        }`}
+                        className={`hover:text-[#0284c7] transition-colors duration-300 ${isActive ? "text-[#0284c7] font-bold" : ""
+                          }`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {nav.label}
@@ -255,7 +284,7 @@ const Navbar = () => {
                   );
                 })}
               </ul>
-              
+
               <div className="mt-6">
                 {!isLoggedIn ? (
                   <div className="flex flex-col gap-3">
@@ -280,7 +309,7 @@ const Navbar = () => {
                       <p className="font-medium text-gray-900 truncate">{getDisplayName()}</p>
                       {email && <p className="text-xs text-gray-500 truncate">{email}</p>}
                     </div>
-                    
+
                     <Link
                       to="/user"
                       className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors rounded"
@@ -289,19 +318,19 @@ const Navbar = () => {
                       <FaUserCircle className="text-[#0284c7]" />
                       Your Profile
                     </Link>
-                    
+
                     <Link
                       to="/editprofile"
                       className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 transition-colors rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" className="text-[#0284c7]">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                       </svg>
                       Settings
                     </Link>
-                    
+
                     <button
                       onClick={() => {
                         handleLogout();
@@ -310,9 +339,9 @@ const Navbar = () => {
                       className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 transition-colors rounded"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16,17 21,12 16,7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16,17 21,12 16,7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
                       </svg>
                       Sign out
                     </button>

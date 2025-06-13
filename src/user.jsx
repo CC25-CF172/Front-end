@@ -238,8 +238,10 @@ export default function ChildGrowthDashboard() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-semibold text-lg">Grafik Pertumbuhan Anak</h2>
             </div>
-            <div className="flex flex-row items-start gap-4">
-              <div className="bg-gray-100 h-64 flex flex-col items-center justify-center rounded-md text-sm text-gray-500 flex-1">
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div
+                className="bg-gray-100 h-64 flex flex-col items-center justify-center rounded-md text-sm text-gray-500 flex-1 max-w-full sm:max-w-none"
+              >
                 {history.length === 0 ? (
                   <span>Belum ada data pertumbuhan.</span>
                 ) : (
@@ -250,7 +252,7 @@ export default function ChildGrowthDashboard() {
                   />
                 )}
               </div>
-              <div className="flex flex-col gap-2 mt-4">
+              <div className="flex flex-col gap-2 mt-4 sm:mt-0 order-1 sm:order-none">
                 <div className="flex items-center gap-2">
                   <span className="inline-block w-4 h-4 rounded-full" style={{ background: "#2563eb" }}></span>
                   <span className="text-xs text-gray-700">Laki-laki</span>
@@ -267,16 +269,19 @@ export default function ChildGrowthDashboard() {
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-xl shadow">
               <h3 className="font-semibold mb-2">Statistik Cepat</h3>
-              <p className="text-sm">Total Asesmen <span className="float-right font-medium">{stats.total}</span></p>
-              <p className="text-sm">Asesmen Terakhir <span className="float-right font-medium">{stats.lastDate}</span></p>
-              <p className="text-sm">Status Saat Ini <span className="float-right">{statusBadge(stats.currentStatus)}</span></p>
+              <p className="text-sm py-1">Total Asesmen <span className="float-right font-medium">{stats.total}</span></p>
+              <p className="text-sm py-1">Asesmen Terakhir <span className="float-right font-medium">{stats.lastDate}</span></p>
+              <p className="text-sm py-1">Status Saat Ini <span className="float-right">{statusBadge(stats.currentStatus)}</span></p>
             </div>
 
             <div className="bg-white p-4 rounded-xl shadow space-y-2">
               <h3 className="font-semibold mb-2">Aksi Cepat</h3>
-              <button className="bg-[#0284c7] hover:bg-blue-600 text-white w-full py-2 rounded-md text-sm font-medium"
-              onClick={() => navigate("/prediction")}
-              >Asesmen Baru</button>
+              <button
+                className="bg-[#0284c7] hover:bg-blue-600 text-white w-full py-2 rounded-md text-sm font-medium"
+                onClick={() => navigate("/prediction")}
+              >
+                Asesmen Baru
+              </button>
               <button
                 className="border border-blue-400 text-blue-500 w-full py-2 rounded-md text-sm"
                 onClick={handleDownloadChart}

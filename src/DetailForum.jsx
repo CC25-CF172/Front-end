@@ -4,6 +4,7 @@ import Navbar from "./pages/components/Navbar";
 import { API_BASE_URL } from "./api";
 import { FaTrashAlt, FaEdit, FaCommentDots } from "react-icons/fa";
 import Footer from "./pages/components/Footer";
+import profile from "./assets/profile.jpg";
 
 const formatRelativeTime = (dateString) => {
   const now = new Date();
@@ -26,46 +27,72 @@ const ForumDetail = () => {
   const [replies, setReplies] = useState([]);
   const [replyContent, setReplyContent] = useState("");
   const [editingReplyId, setEditingReplyId] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [editedReplyContent, setEditedReplyContent] = useState("");
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const fetchForumDetail = async () => {
+    const fetchData = async () => {
+      setLoading(true); // Set loading ke true saat mulai fetch
       try {
-        const res = await fetch(`${API_BASE_URL}/api/v1/forum/${id}`, {
+        // Fetch forum detail
+        const forumRes = await fetch(`${API_BASE_URL}/api/v1/forum/${id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = await res.json();
-        setDetail(data.data);
+        const forumData = await forumRes.json();
+        if (forumData.success) {
+          setDetail(forumData.data);
+        } else {
+          console.error("Gagal memuat detail forum:", forumData.message);
+          setDetail(null);
+        }
+
+        // Fetch replies
+        const repliesRes = await fetch(`${API_BASE_URL}/api/v1/forum-replies`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const repliesData = await repliesRes.json();
+        if (repliesData.success) {
+          const filtered = repliesData.data.filter(
+            (r) => String(r.forum_id) === id
+          );
+          setReplies(filtered);
+        } else {
+          console.error("Gagal memuat komentar:", repliesData.message);
+          setReplies([]);
+        }
+
+        // Fetch profile
+        if (token) {
+          const profileRes = await fetch(`${API_BASE_URL}/api/v1/profile`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const profileData = await profileRes.json();
+          if (profileData.success) {
+            setCurrentUserId(profileData.data.id);
+          } else {
+            console.error("Gagal memuat profil:", profileData.message);
+            setCurrentUserId(null); // Set ke null jika gagal
+          }
+        }
       } catch (err) {
-        console.error("Gagal memuat detail forum:", err);
+        console.error("Error fetching data:", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading ke false setelah semua selesai
       }
     };
 
-    const fetchReplies = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/v1/forum-replies`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-        const filtered = data.data.filter((r) => String(r.forum_id) === id);
-        setReplies(filtered);
-      } catch (err) {
-        console.error("Gagal memuat komentar:", err);
-      }
-    };
-
-    fetchForumDetail();
-    fetchReplies();
+    fetchData();
   }, [id, token]);
 
   const handleSubmitComment = async (e) => {
@@ -86,7 +113,22 @@ const ForumDetail = () => {
       const data = await res.json();
       if (data.success) {
         setReplies((prev) => [...prev, data.data]);
+        const repliesRes = await fetch(`${API_BASE_URL}/api/v1/forum-replies`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const repliesData = await repliesRes.json();
+        if (repliesData.success) {
+          const filtered = repliesData.data.filter(
+            (r) => String(r.forum_id) === id
+          );
+          setReplies(filtered);
+        }
         setReplyContent("");
+      } else {
+        console.error("Gagal mengirim komentar:", data.message);
       }
     } catch (err) {
       console.error("Gagal mengirim komentar:", err);
@@ -98,15 +140,12 @@ const ForumDetail = () => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/v1/forum-replies/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/v1/forum-replies/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (res.ok) {
         setReplies((prev) => prev.filter((r) => r.id !== id));
@@ -120,19 +159,16 @@ const ForumDetail = () => {
 
   const handleUpdateComment = async (id) => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/v1/forum-replies/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            content: editedReplyContent,
-          }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/v1/forum-replies/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          content: editedReplyContent,
+        }),
+      });
 
       const data = await res.json();
       if (data.success) {
@@ -143,6 +179,8 @@ const ForumDetail = () => {
         );
         setEditingReplyId(null);
         setEditedReplyContent("");
+      } else {
+        console.error("Gagal update komentar:", data.message);
       }
     } catch (err) {
       console.error("Error saat update komentar:", err);
@@ -174,13 +212,13 @@ const ForumDetail = () => {
           <h1 className="text-xl sm:text-2xl font-bold mb-2">{detail.title}</h1>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4">
             <img
-              src="/images/user_profile.png"
-              alt="Anonymous"
+              src={profile}
+              alt={detail.user_name || "Anonymous"}
               className="w-10 h-10 rounded-full"
             />
             <div>
               <p className="font-semibold text-gray-800 text-sm sm:text-base">
-                User
+                {detail.user_name || "Anonymous"}
               </p>
               <p className="text-xs sm:text-sm text-gray-500">
                 Diposting {formatRelativeTime(detail.created_at)}
@@ -212,13 +250,13 @@ const ForumDetail = () => {
                 >
                   <div className="flex gap-3">
                     <img
-                      src="/images/user_profile.png"
-                      alt="Anonymous"
+                      src={profile}
+                      alt={reply.user_name || "Anonymous"}
                       className="w-9 h-9 rounded-full"
                     />
                     <div>
                       <p className="font-semibold text-gray-800 text-sm">
-                        User
+                        {reply.user_name || "Anonymous"}
                       </p>
                       <p className="text-xs text-gray-500 mb-2">
                         {formatRelativeTime(reply.created_at)}
@@ -257,22 +295,30 @@ const ForumDetail = () => {
                   </div>
 
                   <div className="flex items-end gap-2 ml-4">
-                    <button
-                      className="text-blue-500 text-sm flex items-center"
-                      onClick={() => {
-                        setEditingReplyId(reply.id);
-                        setEditedReplyContent(reply.content);
-                      }}
-                    >
-                      <FaEdit className="mr-1" /> Ubah
-                    </button>
-                    <p className="text-gray-400"> | </p>
-                    <button
-                      className="text-red-500 text-sm flex items-center"
-                      onClick={() => handleDeleteComment(reply.id)}
-                    >
-                      <FaTrashAlt className="mr-1" /> Hapus
-                    </button>
+                    {reply.user_id === currentUserId && (
+                      <>
+                        <button
+                          className="text-blue-500 text-sm flex items-center"
+                          onClick={() => {
+                            setEditingReplyId(reply.id);
+                            setEditedReplyContent(reply.content);
+                          }}
+                        >
+                          <FaEdit className="mr-1" /> Ubah
+                        </button>
+                        <p className="text-gray-400"> | </p>
+                      </>
+                    )}
+
+                    {(reply.user_id === currentUserId ||
+                      detail.user_id === currentUserId) && (
+                      <button
+                        className="text-red-500 text-sm flex items-center"
+                        onClick={() => handleDeleteComment(reply.id)}
+                      >
+                        <FaTrashAlt className="mr-1" /> Hapus
+                      </button>
+                    )}
                   </div>
                 </div>
               ))
