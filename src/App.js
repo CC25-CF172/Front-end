@@ -55,9 +55,8 @@ function App() {
           }
         />
         <Route path="/newforum" element={<NewForumPage />} />
-        <Route path="/updateforum" element={<UpdateForumPage />} />
+        <Route path="/updateforum/:id" element={<UpdateForumPage />} />
         <Route path="/detailforum/:id" element={<DetailForumPage />} />
-        
       </Routes>
     </Router>
   );
